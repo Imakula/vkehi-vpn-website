@@ -291,3 +291,164 @@ $$('#mainNav a').forEach(link => {
 });
 
 initializeSupabase();
+
+/* VKEHI VPN Customer Dashboard */
+(() => {
+  const supabaseClient = window.supabaseClient;
+
+  // Supports a client created by the existing script.js.
+  // If your existing variable has another name, connect it here.
+  if (!supabaseClient) {
+    console.warn(
+      "Customer dashboard: Supabase client was not found. " +
+      "Connect the existing Supabase client in script.js."
+    );
+    return;
+  }
+
+  const dashboard = document.getElementById("customerDashboard");
+  const dashboardButton = document.getElementById("headerDashboard");
+  const dashboardEmail = document.getElementById("dashboardEmail");
+  const dashboardMessage = document.getElementById("dashboardMessage");
+  const ordersContainer = document.getElementById("dashboardOrders");
+  const subscriptionsContainer =
+    document.getElementById("dashboardSubscriptions");
+
+  function addText(parent, tag, text, className = "") {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (className) element.className = className;
+    parent.appendChild(element);
+    return element;
+  }
+
+  function showRows(container, rows, emptyMessage, fields) {
+    container.replaceChildren();
+
+    if (!rows || rows.length === 0) {
+      addText(container, "p", emptyMessage);
+      return;
+    }
+
+    rows.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "dashboard-item";
+
+      fields.forEach(([label, key]) => {
+        if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
+          const line = document.createElement("p");
+          const strong = document.createElement("strong");
+          strong.textContent = label + ": ";
+          line.appendChild(strong);
+          line.appendChild(document.createTextNode(String(row[key])));
+          item.appendChild(line);
+        }
+      });
+
+      container.appendChild(item);
+    });
+  }
+
+  async function loadDashboard(user) {
+    dashboard.style.display = "block";
+    dashboardEmail.textContent = user.email || "Signed-in user";
+    dashboardMessage.textContent = "Loading your orders and subscriptions...";
+
+    ordersContainer.replaceChildren();
+    subscriptionsContainer.replaceChildren();
+
+    const [ordersResult, subscriptionsResult] = await Promise.all([
+      supabaseClient
+        .from("orders")
+        .select("*")
+        .eq("user_id", user.id),
+
+      supabaseClient
+        .from("vpn_subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+    ]);
+
+    if (ordersResult.error) {
+      console.error("Orders loading error:", ordersResult.error);
+      showRows(
+        ordersContainer,
+        [],
+        "Orders could not be loaded. Check your database policies."
+      );
+    } else {
+      showRows(
+        ordersContainer,
+        ordersResult.data,
+        "You do not have any orders yet.",
+        [
+          ["Plan", "plan_name"],
+          ["Status", "status"],
+          ["Amount", "amount"],
+          ["Created", "created_at"]
+        ]
+      );
+    }
+
+    if (subscriptionsResult.error) {
+      console.error("Subscriptions loading error:", subscriptionsResult.error);
+      showRows(
+        subscriptionsContainer,
+        [],
+        "Subscriptions could not be loaded. Check your database policies."
+      );
+    } else {
+      showRows(
+        subscriptionsContainer,
+        subscriptionsResult.data,
+        "No active VPN subscriptions found.",
+        [
+          ["Plan", "plan_name"],
+          ["Status", "status"],
+          ["Expires", "expires_at"],
+          ["Data limit", "data_limit"],
+          ["Subscription link", "subscription_url"]
+        ]
+      );
+    }
+
+    dashboardMessage.textContent =
+      "Account loaded. Subscription information depends on your database records.";
+  }
+
+  function updateDashboard(session) {
+    const signedIn = Boolean(session?.user);
+
+    if (dashboardButton) {
+      dashboardButton.style.display = signedIn ? "inline-flex" : "none";
+    }
+
+    if (!signedIn) {
+      dashboard.style.display = "none";
+      dashboardEmail.textContent = "-";
+      dashboardMessage.textContent = "Please sign in to view your account.";
+      ordersContainer.replaceChildren();
+      subscriptionsContainer.replaceChildren();
+      return;
+    }
+
+    loadDashboard(session.user).catch((error) => {
+      console.error("Dashboard error:", error);
+      dashboardMessage.textContent =
+        "Could not load the dashboard. Please try again later.";
+    });
+  }
+
+  supabaseClient.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Session check error:", error);
+      return;
+    }
+    updateDashboard(data.session);
+  });
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    updateDashboard(session);
+  });
+})();
+
