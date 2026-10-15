@@ -1,316 +1,267 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050b18">
-  <meta name="description" content="VKEHI VPN subscription plans and customer portal.">
-  <title>VKEHI VPN — Your Freedom Online</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="#home" aria-label="VKEHI VPN home">
-      <span class="brand-mark">ϟ</span>
-      <span>VKEHI <b>VPN</b></span>
-    </a>
+  <meta name="theme-color" content="#080d19">
+  <meta name="description" content="VKEHI VPN subscriptions and customer dashboard">
+  <title>VKEHI VPN | Secure Access</title>
 
-    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="nav container">
+    <a class="brand" href="#home"><span class="brand-icon">V</span> VKEHI <span class="brand-muted">VPN</span></a>
+
+    <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation">☰</button>
 
     <nav id="mainNav">
-      <a class="active" href="#home">Home</a>
+      <a href="#features">Features</a>
       <a href="#plans">Plans</a>
-      <a href="#how">How It Works</a>
-      <a href="#about">About</a>
+      <a href="#how">How it works</a>
     </nav>
 
     <div class="header-actions">
-      <button class="btn btn-outline" id="headerSignIn" data-open="loginModal">
-        Sign In
-      </button>
-      <button
-  class="btn btn-outline"
-  id="headerDashboard"
-  style="display:none;"
-  onclick="document.getElementById('customerDashboard').scrollIntoView({behavior:'smooth'})">
-  Dashboard
-</button>
-      <span id="headerUserEmail" style="display:none;color:#fff;"></span>
-      <button class="btn btn-outline" id="headerLogout" style="display:none;">
-        Logout
-      </button>
-      <a class="btn btn-primary" href="#plans">Get Started</a>
-    </div>
-  </header>
- 
-<section class="customer-dashboard section-wrap" id="customerDashboard" style="display:none;">
-  <div class="section-heading">
-    <span class="section-kicker">CUSTOMER PORTAL</span>
-    <h2>My Dashboard</h2>
-    <p>Manage your VPN orders and subscriptions.</p>
-  </div>
-
-  <div class="dashboard-card">
-    <h3>My Account</h3>
-    <p>Signed in as: <strong id="dashboardEmail">-</strong></p>
-    <p id="dashboardMessage" role="status">Loading your account...</p>
-  </div>
-
-  <div class="dashboard-card">
-    <h3>My Orders</h3>
-    <div id="dashboardOrders">
-      <p>No orders loaded yet.</p>
+      <button class="btn btn-outline" id="headerSignIn">Sign in</button>
+      <span id="headerUserEmail" hidden></span>
+      <button class="btn btn-outline" id="headerDashboard" hidden>Dashboard</button>
+      <button class="btn btn-outline" id="headerLogout" hidden>Logout</button>
     </div>
   </div>
+</header>
 
-  <div class="dashboard-card">
-    <h3>My VPN Subscriptions</h3>
-    <div id="dashboardSubscriptions">
-      <p>No subscriptions loaded yet.</p>
+<main>
+  <section class="hero section container" id="home">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="dot"></span> YOUR CONNECTION, YOUR CONTROL</span>
+      <h1>Browse with more <span class="gradient">freedom.</span></h1>
+      <p class="lead">
+        Choose a VPN subscription plan and manage your account
+        through one simple customer dashboard.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#plans">Explore plans →</a>
+        <a class="btn btn-outline" href="#how">How it works</a>
+      </div>
+
+      <div class="trust">
+        <span>✓ Simple plans</span>
+        <span>✓ Google sign-in</span>
+        <span>✓ Customer dashboard</span>
+      </div>
     </div>
-  </div>
-</section>
 
-  <main>
-    <section class="hero section-wrap" id="home">
-      <div class="hero-copy">
-        <div class="eyebrow">
-          <span class="pulse"></span> FAST <i>•</i> SECURE <i>•</i> GLOBAL
-        </div>
-
-        <h1>Your Freedom Online<br><span>Starts Here.</span></h1>
-
-        <p class="hero-sub">
-          Simple VPN subscriptions for your everyday browsing. Choose a plan,
-          submit your payment slip, and get your connection details after approval.
-        </p>
-
-        <div class="hero-buttons">
-          <a class="btn btn-primary btn-large" href="#plans">View Plans <span>→</span></a>
-          <a class="btn btn-outline btn-large" href="#how">How it works</a>
-        </div>
-
-        <div class="features">
-          <div><span class="feature-icon">ϟ</span><strong>High Speed</strong><small>Stable connections</small></div>
-          <div><span class="feature-icon">◇</span><strong>Privacy First</strong><small>Secure account flow</small></div>
-          <div><span class="feature-icon">◎</span><strong>Flexible Plans</strong><small>Choose your data</small></div>
-          <div><span class="feature-icon">▣</span><strong>Easy Setup</strong><small>Connect your device</small></div>
-        </div>
+    <div class="hero-art">
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <div class="shield">
+        <div class="shield-symbol">✓</div>
+        <small>VKEHI VPN</small>
+        <h2>Privacy first.</h2>
+        <p>Simple subscription management</p>
+        <span class="status"><span class="dot"></span> Account portal</span>
       </div>
+      <div class="float-card float-top">↗ <span>Easy account access</span></div>
+      <div class="float-card float-bottom">✓ <span>Subscription tracking</span></div>
+    </div>
+  </section>
 
-      <div class="hero-art" aria-label="VPN connection illustration">
-        <div class="orbit orbit-one"></div>
-        <div class="orbit orbit-two"></div>
-        <div class="globe">
-          <span class="longitude"></span>
-          <span class="latitude"></span>
-          <span class="map-dot d1"></span>
-          <span class="map-dot d2"></span>
-          <span class="map-dot d3"></span>
-        </div>
+  <section class="section container" id="features">
+    <div class="section-heading">
+      <span class="eyebrow">WHY VKEHI VPN</span>
+      <h2>Everything you need.<br><span class="muted">Without the complexity.</span></h2>
+      <p>Choose your plan and keep track of your account in one place.</p>
+    </div>
 
-        <div class="device laptop">
-          <div class="screen">
-            <div class="screen-top"><span></span><span></span><span></span></div>
-            <div class="screen-logo">ϟ</div>
-            <b>Secure connection</b>
-            <small>Connected • Encrypted</small>
-            <div class="mini-map">✦ ───── ✦<br> ── ✦ ──</div>
-          </div>
-          <div class="laptop-base"></div>
-        </div>
+    <div class="feature-grid">
+      <article class="feature-card">
+        <div class="feature-icon">◈</div>
+        <h3>Flexible plans</h3>
+        <p>Choose from different subscription periods and data options.</p>
+      </article>
 
-        <div class="device phone">
-          <div class="phone-notch"></div>
-          <div class="phone-shield">ϟ</div>
-          <b>VKEHI VPN</b>
-          <small class="online"><span></span> Connected</small>
-          <div class="phone-line"></div>
-          <div class="phone-line short"></div>
-        </div>
+      <article class="feature-card">
+        <div class="feature-icon">◎</div>
+        <h3>Google login</h3>
+        <p>Sign in to your customer account using Google.</p>
+      </article>
 
-        <div class="floating-tag">⌁ <span>Protected<br>connection</span></div>
-      </div>
-    </section>
+      <article class="feature-card">
+        <div class="feature-icon">✓</div>
+        <h3>Customer dashboard</h3>
+        <p>View your orders and subscription records after setup.</p>
+      </article>
+    </div>
+  </section>
 
-    <section class="plans-section" id="plans">
-      <div class="section-wrap">
-        <div class="section-heading">
-          <span class="section-kicker">OUR PLANS</span>
-          <h2>Choose Your Perfect Plan</h2>
-          <p>Flexible subscriptions for your needs. Select a plan to continue.</p>
-        </div>
-
-        <div class="billing-switch" role="group" aria-label="Subscription duration">
-          <button class="billing active" data-days="30">30 Days</button>
-          <button class="billing" data-days="60">60 Days</button>
-        </div>
-
-        <div class="plan-grid">
-          <article class="plan-card">
-            <div class="plan-top">
-              <span class="plan-symbol">◈</span>
-              <span class="plan-label">STARTER</span>
-            </div>
-            <h3>Basic</h3>
-            <p class="plan-desc">For everyday browsing</p>
-            <div class="price">
-              <span class="currency">Rs.</span>
-              <strong data-price="basic">350</strong>
-              <span class="duration">/ <span class="days-label">30</span> days</span>
-            </div>
-            <ul>
-              <li>100 GB data</li>
-              <li>1 device</li>
-              <li>High-speed connection</li>
-              <li>Customer dashboard</li>
-            </ul>
-            <button class="btn btn-outline choose-plan" data-plan="Basic">Choose Basic</button>
-          </article>
-
-          <article class="plan-card popular">
-            <div class="popular-badge">MOST POPULAR</div>
-            <div class="plan-top">
-              <span class="plan-symbol">✧</span>
-              <span class="plan-label">BEST VALUE</span>
-            </div>
-            <h3>Standard</h3>
-            <p class="plan-desc">A balanced everyday plan</p>
-            <div class="price">
-              <span class="currency">Rs.</span>
-              <strong data-price="standard">550</strong>
-              <span class="duration">/ <span class="days-label">30</span> days</span>
-            </div>
-            <ul>
-              <li>200 GB data</li>
-              <li>Up to 2 devices</li>
-              <li>High-speed connection</li>
-              <li>Customer dashboard</li>
-            </ul>
-            <button class="btn btn-primary choose-plan" data-plan="Standard">Choose Standard</button>
-          </article>
-
-          <article class="plan-card">
-            <div class="plan-top">
-              <span class="plan-symbol">✦</span>
-              <span class="plan-label">POWER USER</span>
-            </div>
-            <h3>Unlimited</h3>
-            <p class="plan-desc">For heavy daily usage</p>
-            <div class="price">
-              <span class="currency">Rs.</span>
-              <strong data-price="unlimited">800</strong>
-              <span class="duration">/ <span class="days-label">30</span> days</span>
-            </div>
-            <ul>
-              <li>Unlimited* data</li>
-              <li>Up to 3 devices</li>
-              <li>High-speed connection</li>
-              <li>Customer dashboard</li>
-            </ul>
-            <button class="btn btn-outline choose-plan" data-plan="Unlimited">Choose Unlimited</button>
-          </article>
-        </div>
-
-        <p class="price-note">
-          *Unlimited plan subject to fair-use rules. Prices shown are demo values
-          and can be edited in <code>script.js</code> before launch.
-        </p>
-      </div>
-    </section>
-
-    <section class="how-section section-wrap" id="how">
+  <section class="section plans-section" id="plans">
+    <div class="container">
       <div class="section-heading">
-        <span class="section-kicker">GET CONNECTED</span>
-        <h2>How It Works</h2>
-        <p>Four simple steps to get started.</p>
+        <span class="eyebrow">SUBSCRIPTION OPTIONS</span>
+        <h2>Pick your <span class="gradient">connection.</span></h2>
+        <p>Select your subscription period and preferred plan.</p>
       </div>
 
-      <div class="steps">
-        <div class="step"><span class="step-num">01</span><div class="step-icon">♙</div><h3>Choose a Plan</h3><p>Select the subscription that suits you.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><span class="step-num">02</span><div class="step-icon">▤</div><h3>Make Payment</h3><p>Follow the payment instructions and upload your slip.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><span class="step-num">03</span><div class="step-icon">↗</div><h3>Wait for Approval</h3><p>Your order is reviewed by an administrator.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><span class="step-num">04</span><div class="step-icon">⬡</div><h3>Connect & Enjoy</h3><p>Access your subscription details in your dashboard.</p></div>
+      <div class="period-switch">
+        <button class="period-btn active" data-days="30">30 Days</button>
+        <button class="period-btn" data-days="60">60 Days</button>
       </div>
-    </section>
 
-    <section class="about-section" id="about">
-      <div class="section-wrap about-inner">
-        <div>
-          <span class="section-kicker">ABOUT VKEHI VPN</span>
-          <h2>Simple. Clear. Connected.</h2>
-          <p>Manage your plan from one place. The website is designed to make subscription selection and payment review straightforward.</p>
-        </div>
-        <div class="about-stat"><strong>24/7</strong><span>Self-service dashboard design</span></div>
-        <div class="about-stat"><strong>3</strong><span>Flexible subscription options</span></div>
-      </div>
-    </section>
-  </main>
+      <div class="plan-grid">
+        <article class="plan-card">
+          <span class="plan-tag">BASIC</span>
+          <h3>Starter</h3>
+          <p>For everyday browsing</p>
+          <div class="plan-data">100 GB</div>
+          <p class="plan-period">30-day subscription</p>
+          <ul>
+            <li>✓ 100 GB data option</li>
+            <li>✓ Customer account</li>
+            <li>✓ Subscription tracking</li>
+          </ul>
+          <button class="btn btn-outline choose-plan"
+            data-plan="Basic" data-data="100 GB">Choose Starter</button>
+        </article>
 
-  <footer>
-    <div class="section-wrap footer-inner">
-      <a class="brand" href="#home"><span class="brand-mark">ϟ</span><span>VKEHI <b>VPN</b></span></a>
-      <p>Secure • Fast • Reliable</p>
-      <div class="footer-links">
-        <a href="#plans">Plans</a>
-        <a href="#how">How it works</a>
-        <a href="#about">About</a>
-        <button class="text-button" data-open="loginModal">Customer login</button>
+        <article class="plan-card featured">
+          <span class="popular">POPULAR</span>
+          <span class="plan-tag">STANDARD</span>
+          <h3>Standard</h3>
+          <p>For regular use</p>
+          <div class="plan-data">200 GB</div>
+          <p class="plan-period">30-day subscription</p>
+          <ul>
+            <li>✓ 200 GB data option</li>
+            <li>✓ Customer account</li>
+            <li>✓ Subscription tracking</li>
+          </ul>
+          <button class="btn btn-primary choose-plan"
+            data-plan="Standard" data-data="200 GB">Choose Standard</button>
+        </article>
+
+        <article class="plan-card">
+          <span class="plan-tag">UNLIMITED</span>
+          <h3>Unlimited</h3>
+          <p>For flexible usage</p>
+          <div class="plan-data">Unlimited</div>
+          <p class="plan-period">30-day subscription</p>
+          <ul>
+            <li>✓ Unlimited data option</li>
+            <li>✓ Customer account</li>
+            <li>✓ Subscription tracking</li>
+          </ul>
+          <button class="btn btn-outline choose-plan"
+            data-plan="Unlimited" data-data="Unlimited">Choose Unlimited</button>
+        </article>
       </div>
-      <small>© <span id="year"></span> VKEHI VPN. All rights reserved.</small>
+
+      <p class="note">
+        Final prices and plan availability must be confirmed by the administrator.
+        Selecting a plan does not activate a VPN subscription.
+      </p>
     </div>
-  </footer>
+  </section>
 
-  <div class="modal-backdrop" id="loginModal" aria-hidden="true">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-      <button class="modal-close" data-close aria-label="Close">×</button>
-      <span class="modal-mark">ϟ</span>
-      <h2 id="loginTitle">Welcome to VKEHI VPN</h2>
-      <p>Customer sign-in</p>
-      <button class="btn google-btn" id="googleDemo">
-        <span class="google-g">G</span> Continue with Google
-      </button>
-      <div class="demo-notice">Sign in securely with your Google account.</div>
-    </section>
-  </div>
+  <section class="section container" id="how">
+    <div class="section-heading">
+      <span class="eyebrow">HOW IT WORKS</span>
+      <h2>Three simple steps.</h2>
+    </div>
 
-  <div class="modal-backdrop" id="orderModal" aria-hidden="true">
-    <section class="modal order-modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
-      <button class="modal-close" data-close aria-label="Close">×</button>
-      <span class="modal-mark">ϟ</span>
-      <h2 id="orderTitle">Start your subscription</h2>
-      <p id="selectedPlanText">Selected plan</p>
+    <div class="steps">
+      <article><span>01</span><div><h3>Choose a plan</h3><p>Select a subscription option.</p></div></article>
+      <article><span>02</span><div><h3>Sign in and order</h3><p>Sign in to your account. Payment submission needs backend setup.</p></div></article>
+      <article><span>03</span><div><h3>Manage your account</h3><p>Check your order and subscription information in your dashboard.</p></div></article>
+    </div>
+  </section>
 
-      <form id="orderForm">
-        <label for="customerEmail">Email address</label>
-        <input id="customerEmail" type="email" placeholder="you@example.com" required>
-
-        <label for="paymentMethod">Payment method</label>
-        <select id="paymentMethod">
-          <option>Bank transfer</option>
-          <option>Other (configure later)</option>
-        </select>
-
-        <label for="slipFile">Payment slip (optional in preview)</label>
-        <input id="slipFile" type="file" accept="image/*,.pdf">
-
-        <button class="btn btn-primary btn-full" type="submit">Submit demo order</button>
-      </form>
-
-      <div class="demo-notice">
-        This preview does not send files, verify payments, or create a VPN account.
-        A secure backend is required for live orders.
+  <section class="section dashboard-section" id="customerDashboard" hidden>
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">CUSTOMER PORTAL</span>
+        <h2>My <span class="gradient">Dashboard.</span></h2>
+        <p>View your account, orders and VPN subscriptions.</p>
       </div>
-    </section>
+
+      <div class="dashboard-grid">
+        <article class="dashboard-card">
+          <h3>My account</h3>
+          <p class="muted">SIGNED IN AS</p>
+          <p id="dashboardEmail" class="account-email">-</p>
+          <p id="dashboardMessage" role="status">Loading account...</p>
+        </article>
+
+        <article class="dashboard-card">
+          <h3>My orders</h3>
+          <div id="dashboardOrders">
+            <p>No orders loaded.</p>
+          </div>
+        </article>
+
+        <article class="dashboard-card wide">
+          <h3>My VPN subscriptions</h3>
+          <div id="dashboardSubscriptions">
+            <p>No subscriptions loaded.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <a class="brand" href="#home"><span class="brand-icon">V</span> VKEHI VPN</a>
+    <p>Simple subscription management.</p>
+    <span>© <span id="currentYear"></span> VKEHI VPN</span>
   </div>
+</footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-backdrop" id="loginModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <button class="modal-close" data-close="loginModal" aria-label="Close">×</button>
+    <div class="brand-icon modal-icon">V</div>
+    <span class="eyebrow">CUSTOMER ACCOUNT</span>
+    <h2 id="loginTitle">Welcome back.</h2>
+    <p>Sign in to access your customer dashboard.</p>
+    <button class="btn btn-google" id="googleSignIn">
+      <span class="google-letter">G</span> Continue with Google
+    </button>
+    <p id="loginStatus" class="message" role="status"></p>
+  </section>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+<div class="modal-backdrop" id="orderModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+    <button class="modal-close" data-close="orderModal" aria-label="Close">×</button>
+    <span class="eyebrow">SUBSCRIPTION REQUEST</span>
+    <h2 id="orderTitle">Your plan.</h2>
+
+    <div class="order-summary">
+      <p>Plan <strong id="orderPlanName">Standard</strong></p>
+      <p>Period <strong id="orderPeriod">30 days</strong></p>
+      <p>Data <strong id="orderData">200 GB</strong></p>
+    </div>
+
+    <p class="note">
+      Order saving and payment slip uploads are not connected yet.
+    </p>
+    <button class="btn btn-primary" id="continueOrder">Sign in to continue</button>
+    <p id="orderStatus" class="message" role="status"></p>
+  </section>
+</div>
+
+<div id="siteToast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
