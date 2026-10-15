@@ -28,6 +28,13 @@
       <button class="btn btn-outline" id="headerSignIn" data-open="loginModal">
         Sign In
       </button>
+      <button
+  class="btn btn-outline"
+  id="headerDashboard"
+  style="display:none;"
+  onclick="document.getElementById('customerDashboard').scrollIntoView({behavior:'smooth'})">
+  Dashboard
+</button>
       <span id="headerUserEmail" style="display:none;color:#fff;"></span>
       <button class="btn btn-outline" id="headerLogout" style="display:none;">
         Logout
@@ -35,6 +42,34 @@
       <a class="btn btn-primary" href="#plans">Get Started</a>
     </div>
   </header>
+ 
+<section class="customer-dashboard section-wrap" id="customerDashboard" style="display:none;">
+  <div class="section-heading">
+    <span class="section-kicker">CUSTOMER PORTAL</span>
+    <h2>My Dashboard</h2>
+    <p>Manage your VPN orders and subscriptions.</p>
+  </div>
+
+  <div class="dashboard-card">
+    <h3>My Account</h3>
+    <p>Signed in as: <strong id="dashboardEmail">-</strong></p>
+    <p id="dashboardMessage" role="status">Loading your account...</p>
+  </div>
+
+  <div class="dashboard-card">
+    <h3>My Orders</h3>
+    <div id="dashboardOrders">
+      <p>No orders loaded yet.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-card">
+    <h3>My VPN Subscriptions</h3>
+    <div id="dashboardSubscriptions">
+      <p>No subscriptions loaded yet.</p>
+    </div>
+  </div>
+</section>
 
   <main>
     <section class="hero section-wrap" id="home">
