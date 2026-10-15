@@ -1,454 +1,440 @@
 
-const prices = {
-  30: { Basic: 350, Standard: 550, Unlimited: 800 },
-  60: { Basic: 650, Standard: 1000, Unlimited: 1500 }
-};
+/* VKEHI VPN - Main JavaScript */
 
-let selectedDays = 30;
-let selectedPlan = "Standard";
-let supabaseClient = null;
-
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-
-$("#year").textContent = new Date().getFullYear();
-
-function showToast(message) {
-  const toast = $("#toast");
-  if (!toast) return;
-
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3200);
-}
-
-function openModal(id) {
-  const modal = document.getElementById(id);
-  if (!modal) return;
-
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-}
-
-function closeModals() {
-  $$(".modal-backdrop").forEach(modal => {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-  });
-
-  document.body.style.overflow = "";
-}
-
-$$("[data-open]").forEach(button => {
-  button.addEventListener("click", () => {
-    openModal(button.dataset.open);
-  });
-});
-
-$$("[data-close]").forEach(button => {
-  button.addEventListener("click", closeModals);
-});
-
-$$(".modal-backdrop").forEach(backdrop => {
-  backdrop.addEventListener("click", event => {
-    if (event.target === backdrop) closeModals();
-  });
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeModals();
-});
-
-// Subscription duration and prices
-$$(".billing").forEach(button => {
-  button.addEventListener("click", () => {
-    selectedDays = Number(button.dataset.days);
-
-    $$(".billing").forEach(item => {
-      item.classList.toggle("active", item === button);
-    });
-
-    $$(".days-label").forEach(label => {
-      label.textContent = selectedDays;
-    });
-
-    Object.entries(prices[selectedDays]).forEach(([plan, price]) => {
-      const element = $(`[data-price="${plan.toLowerCase()}"]`);
-      if (element) {
-        element.textContent = price.toLocaleString("en-LK");
-      }
-    });
-  });
-});
-
-// Select a subscription plan
-$$(".choose-plan").forEach(button => {
-  button.addEventListener("click", () => {
-    selectedPlan = button.dataset.plan;
-
-    $("#selectedPlanText").textContent =
-      `${selectedPlan} plan • ${selectedDays} days • Rs. ${
-        prices[selectedDays][selectedPlan].toLocaleString("en-LK")
-      }`;
-
-    openModal("orderModal");
-  });
-});
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-// Update header and login modal after login/logout
-function updateLoginUI(session) {
-  const googleButton = $("#googleDemo");
-  const headerSignIn = $("#headerSignIn");
-  const headerUserEmail = $("#headerUserEmail");
-  const headerLogout = $("#headerLogout");
-  const loggedIn = Boolean(session?.user);
-  const email = session?.user?.email || "Customer";
-
-  if (headerSignIn) {
-    headerSignIn.style.display = loggedIn ? "none" : "";
-  }
-
-  if (headerUserEmail) {
-    headerUserEmail.textContent = email;
-    headerUserEmail.style.display = loggedIn ? "inline-block" : "none";
-  }
-
-  if (headerLogout) {
-    headerLogout.style.display = loggedIn ? "inline-block" : "none";
-  }
-
-  if (googleButton) {
-    googleButton.innerHTML = loggedIn
-      ? `<span class="google-g">G</span> Signed in: ${escapeHTML(email)}`
-      : '<span class="google-g">G</span> Continue with Google';
-  }
-
-  const loginModal = $("#loginModal");
-  const notice = loginModal
-    ? $(".demo-notice", loginModal)
-    : null;
-
-  if (notice) {
-    notice.textContent = loggedIn
-      ? "You are signed in with Google."
-      : "Sign in securely with your Google account.";
-  }
-}
-
-// Initialize Supabase
-async function initializeSupabase() {
-  if (!window.supabase?.createClient || !window.VKEHI_CONFIG) {
-    showToast("Supabase configuration is missing. Please check config.js.");
-    return;
-  }
-
-  const { supabaseUrl, supabaseAnonKey } = window.VKEHI_CONFIG;
-
-  if (
-    !supabaseUrl ||
-    !supabaseAnonKey ||
-    supabaseAnonKey.includes("YOUR_") ||
-    supabaseAnonKey.includes("PASTE_")
-  ) {
-    showToast("Please configure your Supabase publishable key.");
-    return;
-  }
-
-  supabaseClient = window.supabase.createClient(
-    supabaseUrl,
-    supabaseAnonKey
-  );
-
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    showToast("Could not check login status. Please try again.");
-    return;
-  }
-
-  updateLoginUI(data.session);
-
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
-    updateLoginUI(session);
-  });
-}
-
-// Google sign-in
-$("#googleDemo").addEventListener("click", async () => {
-  if (!supabaseClient) {
-    showToast("Supabase is not ready. Please refresh the page.");
-    return;
-  }
-
-  const { data, error: sessionError } =
-    await supabaseClient.auth.getSession();
-
-  if (sessionError) {
-    showToast("Could not check login status. Please try again.");
-    return;
-  }
-
-  if (data.session?.user) {
-    showToast(`Signed in as ${data.session.user.email || "customer"}.`);
-    return;
-  }
-
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: window.location.origin
-    }
-  });
-
-  if (error) {
-    showToast(`Google login failed: ${error.message}`);
-  }
-});
-
-// Logout
-$("#headerLogout").addEventListener("click", async () => {
-  if (!supabaseClient) {
-    showToast("Supabase is not ready. Please refresh the page.");
-    return;
-  }
-
-  const logoutButton = $("#headerLogout");
-  logoutButton.disabled = true;
-
-  const { error } = await supabaseClient.auth.signOut();
-
-  logoutButton.disabled = false;
-
-  if (error) {
-    showToast("Logout failed. Please try again.");
-    return;
-  }
-
-  closeModals();
-  showToast("Logged out successfully.");
-});
-
-// Order submission remains preview-only.
-// Live orders and payment slip uploads are not enabled yet.
-$("#orderForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  const email = $("#customerEmail").value.trim();
-  if (!email) return;
-
-  if (!supabaseClient) {
-    showToast("Supabase is not ready. Please refresh the page.");
-    return;
-  }
-
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    showToast("Could not check login status. Please try again.");
-    return;
-  }
-
-  if (!data.session?.user) {
-    closeModals();
-    showToast("Please sign in with Google before ordering.");
-    openModal("loginModal");
-    return;
-  }
-
-  closeModals();
-
-  showToast(
-    "Login verified. Live orders and payment uploads are not enabled yet."
-  );
-
-  event.target.reset();
-});
-
-// Mobile navigation
-$("#menuToggle").addEventListener("click", () => {
-  $("#mainNav").classList.toggle("open");
-});
-
-$$('#mainNav a').forEach(link => {
-  link.addEventListener("click", () => {
-    $("#mainNav").classList.remove("open");
-  });
-});
-
-initializeSupabase();
-
-/* VKEHI VPN Customer Dashboard */
 (() => {
-  const supabaseClient = window.supabaseClient;
+  "use strict";
 
-  // Supports a client created by the existing script.js.
-  // If your existing variable has another name, connect it here.
-  if (!supabaseClient) {
-    console.warn(
-      "Customer dashboard: Supabase client was not found. " +
-      "Connect the existing Supabase client in script.js."
-    );
-    return;
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+  let supabaseClient = null;
+  let currentSession = null;
+  let selectedDays = 30;
+  let selectedPlan = { name: "Standard", data: "200 GB" };
+
+  const el = {
+    signIn: $("#headerSignIn"),
+    email: $("#headerUserEmail"),
+    dashboardButton: $("#headerDashboard"),
+    logout: $("#headerLogout"),
+    dashboard: $("#customerDashboard"),
+    dashboardEmail: $("#dashboardEmail"),
+    dashboardMessage: $("#dashboardMessage"),
+    orders: $("#dashboardOrders"),
+    subscriptions: $("#dashboardSubscriptions"),
+    loginModal: $("#loginModal"),
+    googleSignIn: $("#googleSignIn"),
+    loginStatus: $("#loginStatus"),
+    orderModal: $("#orderModal"),
+    orderPlan: $("#orderPlanName"),
+    orderPeriod: $("#orderPeriod"),
+    orderData: $("#orderData"),
+    orderStatus: $("#orderStatus"),
+    toast: $("#siteToast")
+  };
+
+  function showToast(message) {
+    if (!el.toast) return;
+
+    el.toast.textContent = message;
+    el.toast.classList.add("show");
+
+    window.setTimeout(() => {
+      el.toast.classList.remove("show");
+    }, 3000);
   }
 
-  const dashboard = document.getElementById("customerDashboard");
-  const dashboardButton = document.getElementById("headerDashboard");
-  const dashboardEmail = document.getElementById("dashboardEmail");
-  const dashboardMessage = document.getElementById("dashboardMessage");
-  const ordersContainer = document.getElementById("dashboardOrders");
-  const subscriptionsContainer =
-    document.getElementById("dashboardSubscriptions");
+  function openModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
 
-  function addText(parent, tag, text, className = "") {
-    const element = document.createElement(tag);
-    element.textContent = text;
-    if (className) element.className = className;
-    parent.appendChild(element);
-    return element;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
   }
 
-  function showRows(container, rows, emptyMessage, fields) {
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.hidden = true;
+
+    if (!$(".modal-backdrop:not([hidden])")) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  function setMessage(container, message) {
+    if (!container) return;
+
     container.replaceChildren();
 
-    if (!rows || rows.length === 0) {
-      addText(container, "p", emptyMessage);
+    const p = document.createElement("p");
+    p.textContent = message;
+    container.appendChild(p);
+  }
+
+  function updateLoginUI(session) {
+    currentSession = session || null;
+
+    const user = currentSession?.user || null;
+    const loggedIn = Boolean(user);
+
+    if (el.signIn) el.signIn.hidden = loggedIn;
+    if (el.email) {
+      el.email.textContent = user?.email || "";
+      el.email.hidden = !loggedIn;
+    }
+    if (el.dashboardButton) el.dashboardButton.hidden = !loggedIn;
+    if (el.logout) el.logout.hidden = !loggedIn;
+
+    if (!loggedIn) {
+      if (el.dashboard) el.dashboard.hidden = true;
+      if (el.dashboardEmail) el.dashboardEmail.textContent = "-";
+
+      if (el.dashboardMessage) {
+        el.dashboardMessage.textContent =
+          "Please sign in to view your account.";
+      }
+
+      setMessage(el.orders, "Sign in to view your orders.");
+      setMessage(el.subscriptions, "Sign in to view subscriptions.");
+    } else {
+      closeModal("loginModal");
+    }
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return String(value);
+    }
+
+    return date.toLocaleDateString();
+  }
+
+  function renderRecords(container, result, emptyText, fields) {
+    if (!container) return;
+
+    container.replaceChildren();
+
+    if (result.error) {
+      console.error("Dashboard database error:", result.error);
+      setMessage(
+        container,
+        "Unable to load records. Check database tables and RLS policies."
+      );
       return;
     }
 
-    rows.forEach((row) => {
-      const item = document.createElement("div");
-      item.className = "dashboard-item";
+    if (!result.data || result.data.length === 0) {
+      setMessage(container, emptyText);
+      return;
+    }
 
-      fields.forEach(([label, key]) => {
-        if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
-          const line = document.createElement("p");
-          const strong = document.createElement("strong");
-          strong.textContent = label + ": ";
-          line.appendChild(strong);
-          line.appendChild(document.createTextNode(String(row[key])));
-          item.appendChild(line);
+    result.data.forEach((record) => {
+      const card = document.createElement("div");
+      card.className = "dashboard-record";
+
+      fields.forEach(([label, key, formatter]) => {
+        const value = record[key];
+
+        if (value === null || value === undefined || value === "") {
+          return;
         }
+
+        const line = document.createElement("p");
+        line.className = "record-line";
+
+        const labelElement = document.createElement("strong");
+        labelElement.textContent = label + ": ";
+
+        const valueElement = document.createElement("span");
+        valueElement.textContent = formatter
+          ? formatter(value)
+          : String(value);
+
+        line.append(labelElement, valueElement);
+        card.appendChild(line);
       });
 
-      container.appendChild(item);
+      container.appendChild(card);
     });
   }
 
-  async function loadDashboard(user) {
-    dashboard.style.display = "block";
-    dashboardEmail.textContent = user.email || "Signed-in user";
-    dashboardMessage.textContent = "Loading your orders and subscriptions...";
+  async function loadCustomerDashboard(user) {
+    if (!user || !supabaseClient) return;
 
-    ordersContainer.replaceChildren();
-    subscriptionsContainer.replaceChildren();
+    if (el.dashboard) el.dashboard.hidden = false;
+    if (el.dashboardEmail) {
+      el.dashboardEmail.textContent = user.email || "Customer";
+    }
+    if (el.dashboardMessage) {
+      el.dashboardMessage.textContent = "Loading account information...";
+    }
+
+    setMessage(el.orders, "Loading orders...");
+    setMessage(el.subscriptions, "Loading subscriptions...");
 
     const [ordersResult, subscriptionsResult] = await Promise.all([
       supabaseClient
         .from("orders")
-        .select("*")
-        .eq("user_id", user.id),
+        .select("id, plan_name, status, amount, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false }),
 
       supabaseClient
         .from("vpn_subscriptions")
-        .select("*")
+        .select("id, plan_name, status, expires_at, data_limit, subscription_url")
         .eq("user_id", user.id)
+        .order("expires_at", { ascending: false })
     ]);
 
-    if (ordersResult.error) {
-      console.error("Orders loading error:", ordersResult.error);
-      showRows(
-        ordersContainer,
-        [],
-        "Orders could not be loaded. Check your database policies."
-      );
-    } else {
-      showRows(
-        ordersContainer,
-        ordersResult.data,
-        "You do not have any orders yet.",
-        [
-          ["Plan", "plan_name"],
-          ["Status", "status"],
-          ["Amount", "amount"],
-          ["Created", "created_at"]
-        ]
-      );
-    }
+    renderRecords(
+      el.orders,
+      ordersResult,
+      "You do not have any orders yet.",
+      [
+        ["Plan", "plan_name"],
+        ["Status", "status"],
+        ["Amount", "amount"],
+        ["Order date", "created_at", formatDate]
+      ]
+    );
 
-    if (subscriptionsResult.error) {
-      console.error("Subscriptions loading error:", subscriptionsResult.error);
-      showRows(
-        subscriptionsContainer,
-        [],
-        "Subscriptions could not be loaded. Check your database policies."
-      );
-    } else {
-      showRows(
-        subscriptionsContainer,
-        subscriptionsResult.data,
-        "No active VPN subscriptions found.",
-        [
-          ["Plan", "plan_name"],
-          ["Status", "status"],
-          ["Expires", "expires_at"],
-          ["Data limit", "data_limit"],
-          ["Subscription link", "subscription_url"]
-        ]
-      );
-    }
+    renderRecords(
+      el.subscriptions,
+      subscriptionsResult,
+      "No VPN subscriptions found.",
+      [
+        ["Plan", "plan_name"],
+        ["Status", "status"],
+        ["Expiry date", "expires_at", formatDate],
+        ["Data limit", "data_limit"],
+        ["Subscription link", "subscription_url"]
+      ]
+    );
 
-    dashboardMessage.textContent =
-      "Account loaded. Subscription information depends on your database records.";
+    if (el.dashboardMessage) {
+      el.dashboardMessage.textContent =
+        "Signed in successfully. Your available records are shown below.";
+    }
   }
 
-  function updateDashboard(session) {
-    const signedIn = Boolean(session?.user);
+  function refreshDashboard(session) {
+    if (!session?.user) return;
 
-    if (dashboardButton) {
-      dashboardButton.style.display = signedIn ? "inline-flex" : "none";
-    }
-
-    if (!signedIn) {
-      dashboard.style.display = "none";
-      dashboardEmail.textContent = "-";
-      dashboardMessage.textContent = "Please sign in to view your account.";
-      ordersContainer.replaceChildren();
-      subscriptionsContainer.replaceChildren();
-      return;
-    }
-
-    loadDashboard(session.user).catch((error) => {
+    loadCustomerDashboard(session.user).catch((error) => {
       console.error("Dashboard error:", error);
-      dashboardMessage.textContent =
-        "Could not load the dashboard. Please try again later.";
+
+      if (el.dashboardMessage) {
+        el.dashboardMessage.textContent =
+          "Could not load dashboard. Please refresh and try again.";
+      }
     });
   }
 
-  supabaseClient.auth.getSession().then(({ data, error }) => {
-    if (error) {
-      console.error("Session check error:", error);
+  async function initializeSupabase() {
+    const config = window.VKEHI_CONFIG;
+
+    if (!config?.supabaseUrl || !config?.supabaseAnonKey) {
+      if (el.loginStatus) {
+        el.loginStatus.textContent =
+          "Supabase configuration is missing. Check config.js.";
+      }
+      console.error("Missing Supabase configuration.");
       return;
     }
-    updateDashboard(data.session);
-  });
 
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
-    updateDashboard(session);
-  });
+    if (!window.supabase?.createClient) {
+      if (el.loginStatus) {
+        el.loginStatus.textContent =
+          "Supabase library failed to load. Refresh the page.";
+      }
+      return;
+    }
+
+    try {
+      supabaseClient = window.supabase.createClient(
+        config.supabaseUrl,
+        config.supabaseAnonKey
+      );
+
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) throw error;
+
+      updateLoginUI(data.session);
+      refreshDashboard(data.session);
+
+      supabaseClient.auth.onAuthStateChange((_event, session) => {
+        updateLoginUI(session);
+        refreshDashboard(session);
+      });
+    } catch (error) {
+      console.error("Supabase initialization failed:", error);
+
+      if (el.loginStatus) {
+        el.loginStatus.textContent =
+          "Could not connect to Supabase. Check your configuration.";
+      }
+    }
+  }
+
+  async function signInWithGoogle() {
+    if (!supabaseClient) {
+      el.loginStatus.textContent =
+        "Sign-in is not ready. Check config.js and Supabase settings.";
+      return;
+    }
+
+    el.googleSignIn.disabled = true;
+    el.loginStatus.textContent = "Opening Google sign-in...";
+
+    try {
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Google login failed:", error);
+
+      el.loginStatus.textContent =
+        "Google sign-in failed. Check the Google provider and redirect URLs.";
+
+      el.googleSignIn.disabled = false;
+    }
+  }
+
+  async function signOut() {
+    if (!supabaseClient) return;
+
+    el.logout.disabled = true;
+
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+
+      showToast("You have signed out.");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      showToast("Logout failed. Please try again.");
+    } finally {
+      el.logout.disabled = false;
+    }
+  }
+
+  function updateOrderSummary() {
+    el.orderPlan.textContent = selectedPlan.name;
+    el.orderPeriod.textContent = selectedDays + " days";
+    el.orderData.textContent = selectedPlan.data;
+
+    $$(".plan-period").forEach((item) => {
+      item.textContent = selectedDays + "-day subscription";
+    });
+  }
+
+  function choosePlan(button) {
+    selectedPlan = {
+      name: button.dataset.plan || "Standard",
+      data: button.dataset.data || "200 GB"
+    };
+
+    updateOrderSummary();
+    el.orderStatus.textContent = "";
+    openModal("orderModal");
+  }
+
+  function continueOrder() {
+    if (!currentSession?.user) {
+      closeModal("orderModal");
+      openModal("loginModal");
+      el.loginStatus.textContent =
+        "Sign in to continue with your selected plan.";
+      return;
+    }
+
+    el.orderStatus.textContent =
+      "Your plan is selected. Order saving and payment upload still need backend setup.";
+  }
+
+  function bindEvents() {
+    el.signIn?.addEventListener("click", () => openModal("loginModal"));
+    el.googleSignIn?.addEventListener("click", signInWithGoogle);
+    el.logout?.addEventListener("click", signOut);
+    $("#continueOrder")?.addEventListener("click", continueOrder);
+
+    el.dashboardButton?.addEventListener("click", () => {
+      if (!currentSession?.user) {
+        openModal("loginModal");
+        return;
+      }
+
+      el.dashboard.hidden = false;
+      el.dashboard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      refreshDashboard(currentSession);
+    });
+
+    $$("[data-close]").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeModal(button.dataset.close);
+      });
+    });
+
+    $$(".modal-backdrop").forEach((modal) => {
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal(modal.id);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        $$(".modal-backdrop:not([hidden])").forEach((modal) => {
+          closeModal(modal.id);
+        });
+      }
+    });
+
+    $$(".period-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedDays = Number(button.dataset.days) === 60 ? 60 : 30;
+
+        $$(".period-btn").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+
+        updateOrderSummary();
+      });
+    });
+
+    $$(".choose-plan").forEach((button) => {
+      button.addEventListener("click", () => choosePlan(button));
+    });
+
+    $("#menuToggle")?.addEventListener("click", () => {
+      $("#mainNav")?.classList.toggle("nav-open");
+    });
+
+    $$("#mainNav a").forEach((link) => {
+      link.addEventListener("click", () => {
+        $("#mainNav")?.classList.remove("nav-open");
+      });
+    });
+
+    $("#currentYear").textContent = String(new Date().getFullYear());
+  }
+
+  bindEvents();
+  updateOrderSummary();
+  initializeSupabase();
 })();
-
