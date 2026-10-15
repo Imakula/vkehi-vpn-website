@@ -15,15 +15,21 @@ $("#year").textContent = new Date().getFullYear();
 
 function showToast(message) {
   const toast = $("#toast");
+  if (!toast) return;
+
   toast.textContent = message;
   toast.classList.add("show");
+
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove("show"), 3200);
+  showToast.timer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3200);
 }
 
 function openModal(id) {
   const modal = document.getElementById(id);
   if (!modal) return;
+
   modal.classList.add("open");
   modal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
@@ -34,34 +40,38 @@ function closeModals() {
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
   });
+
   document.body.style.overflow = "";
 }
 
-$$("[data-open]").forEach(button =>
-  button.addEventListener("click", () => openModal(button.dataset.open))
-);
+$$("[data-open]").forEach(button => {
+  button.addEventListener("click", () => {
+    openModal(button.dataset.open);
+  });
+});
 
-$$("[data-close]").forEach(button =>
-  button.addEventListener("click", closeModals)
-);
+$$("[data-close]").forEach(button => {
+  button.addEventListener("click", closeModals);
+});
 
-$$(".modal-backdrop").forEach(backdrop =>
+$$(".modal-backdrop").forEach(backdrop => {
   backdrop.addEventListener("click", event => {
     if (event.target === backdrop) closeModals();
-  })
-);
+  });
+});
 
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") closeModals();
 });
 
+// Subscription duration and prices
 $$(".billing").forEach(button => {
   button.addEventListener("click", () => {
     selectedDays = Number(button.dataset.days);
 
-    $$(".billing").forEach(item =>
-      item.classList.toggle("active", item === button)
-    );
+    $$(".billing").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
 
     $$(".days-label").forEach(label => {
       label.textContent = selectedDays;
@@ -69,11 +79,14 @@ $$(".billing").forEach(button => {
 
     Object.entries(prices[selectedDays]).forEach(([plan, price]) => {
       const element = $(`[data-price="${plan.toLowerCase()}"]`);
-      if (element) element.textContent = price.toLocaleString("en-LK");
+      if (element) {
+        element.textContent = price.toLocaleString("en-LK");
+      }
     });
   });
 });
 
+// Select a subscription plan
 $$(".choose-plan").forEach(button => {
   button.addEventListener("click", () => {
     selectedPlan = button.dataset.plan;
@@ -87,7 +100,57 @@ $$(".choose-plan").forEach(button => {
   });
 });
 
-// Connect to Supabase using the public publishable key in config.js.
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+// Update header and login modal after login/logout
+function updateLoginUI(session) {
+  const googleButton = $("#googleDemo");
+  const headerSignIn = $("#headerSignIn");
+  const headerUserEmail = $("#headerUserEmail");
+  const headerLogout = $("#headerLogout");
+  const loggedIn = Boolean(session?.user);
+  const email = session?.user?.email || "Customer";
+
+  if (headerSignIn) {
+    headerSignIn.style.display = loggedIn ? "none" : "";
+  }
+
+  if (headerUserEmail) {
+    headerUserEmail.textContent = email;
+    headerUserEmail.style.display = loggedIn ? "inline-block" : "none";
+  }
+
+  if (headerLogout) {
+    headerLogout.style.display = loggedIn ? "inline-block" : "none";
+  }
+
+  if (googleButton) {
+    googleButton.innerHTML = loggedIn
+      ? `<span class="google-g">G</span> Signed in: ${escapeHTML(email)}`
+      : '<span class="google-g">G</span> Continue with Google';
+  }
+
+  const loginModal = $("#loginModal");
+  const notice = loginModal
+    ? $(".demo-notice", loginModal)
+    : null;
+
+  if (notice) {
+    notice.textContent = loggedIn
+      ? "You are signed in with Google."
+      : "Sign in securely with your Google account.";
+  }
+}
+
+// Initialize Supabase
 async function initializeSupabase() {
   if (!window.supabase?.createClient || !window.VKEHI_CONFIG) {
     showToast("Supabase configuration is missing. Please check config.js.");
@@ -96,9 +159,12 @@ async function initializeSupabase() {
 
   const { supabaseUrl, supabaseAnonKey } = window.VKEHI_CONFIG;
 
-  if (!supabaseUrl || !supabaseAnonKey ||
-      supabaseAnonKey.includes("YOUR_") ||
-      supabaseAnonKey.includes("PASTE_")) {
+  if (
+    !supabaseUrl ||
+    !supabaseAnonKey ||
+    supabaseAnonKey.includes("YOUR_") ||
+    supabaseAnonKey.includes("PASTE_")
+  ) {
     showToast("Please configure your Supabase publishable key.");
     return;
   }
@@ -122,48 +188,20 @@ async function initializeSupabase() {
   });
 }
 
-function updateLoginUI(session) {
-  const button = $("#googleDemo");
-
-  if (session?.user) {
-    const email = session.user.email || "Customer";
-    button.innerHTML = `<span class="google-g">G</span> Signed in: ${
-      escapeHTML(email)
-    }`;
-
-    const notice = $(".demo-notice", $("#loginModal"));
-    if (notice) {
-      notice.textContent = "You are signed in with Google.";
-    }
-  } else {
-    button.innerHTML =
-      '<span class="google-g">G</span> Continue with Google';
-
-    const notice = $(".demo-notice", $("#loginModal"));
-    if (notice) {
-      notice.textContent =
-        "Sign in securely with your Google account.";
-    }
-  }
-}
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
+// Google sign-in
 $("#googleDemo").addEventListener("click", async () => {
   if (!supabaseClient) {
     showToast("Supabase is not ready. Please refresh the page.");
     return;
   }
 
-  const { data } = await supabaseClient.auth.getSession();
+  const { data, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionError) {
+    showToast("Could not check login status. Please try again.");
+    return;
+  }
 
   if (data.session?.user) {
     showToast(`Signed in as ${data.session.user.email || "customer"}.`);
@@ -182,13 +220,35 @@ $("#googleDemo").addEventListener("click", async () => {
   }
 });
 
-// Orders remain in preview mode until database and payment storage
-// permissions are configured.
+// Logout
+$("#headerLogout").addEventListener("click", async () => {
+  if (!supabaseClient) {
+    showToast("Supabase is not ready. Please refresh the page.");
+    return;
+  }
+
+  const logoutButton = $("#headerLogout");
+  logoutButton.disabled = true;
+
+  const { error } = await supabaseClient.auth.signOut();
+
+  logoutButton.disabled = false;
+
+  if (error) {
+    showToast("Logout failed. Please try again.");
+    return;
+  }
+
+  closeModals();
+  showToast("Logged out successfully.");
+});
+
+// Order submission remains preview-only.
+// Live orders and payment slip uploads are not enabled yet.
 $("#orderForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const email = $("#customerEmail").value.trim();
-
   if (!email) return;
 
   if (!supabaseClient) {
@@ -196,7 +256,12 @@ $("#orderForm").addEventListener("submit", async event => {
     return;
   }
 
-  const { data } = await supabaseClient.auth.getSession();
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    showToast("Could not check login status. Please try again.");
+    return;
+  }
 
   if (!data.session?.user) {
     closeModals();
@@ -206,12 +271,15 @@ $("#orderForm").addEventListener("submit", async event => {
   }
 
   closeModals();
+
   showToast(
     "Login verified. Live orders and payment uploads are not enabled yet."
   );
+
   event.target.reset();
 });
 
+// Mobile navigation
 $("#menuToggle").addEventListener("click", () => {
   $("#mainNav").classList.toggle("open");
 });
