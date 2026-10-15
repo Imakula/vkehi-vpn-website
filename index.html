@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,15 +12,27 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="VKEHI VPN home">
-      <span class="brand-mark">ϟ</span><span>VKEHI <b>VPN</b></span>
+      <span class="brand-mark">ϟ</span>
+      <span>VKEHI <b>VPN</b></span>
     </a>
+
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+
     <nav id="mainNav">
-      <a class="active" href="#home">Home</a><a href="#plans">Plans</a>
-      <a href="#how">How It Works</a><a href="#about">About</a>
+      <a class="active" href="#home">Home</a>
+      <a href="#plans">Plans</a>
+      <a href="#how">How It Works</a>
+      <a href="#about">About</a>
     </nav>
+
     <div class="header-actions">
-      <button class="btn btn-outline" data-open="loginModal">Sign In</button>
+      <button class="btn btn-outline" id="headerSignIn" data-open="loginModal">
+        Sign In
+      </button>
+      <span id="headerUserEmail" style="display:none;color:#fff;"></span>
+      <button class="btn btn-outline" id="headerLogout" style="display:none;">
+        Logout
+      </button>
       <a class="btn btn-primary" href="#plans">Get Started</a>
     </div>
   </header>
@@ -27,10 +40,22 @@
   <main>
     <section class="hero section-wrap" id="home">
       <div class="hero-copy">
-        <div class="eyebrow"><span class="pulse"></span> FAST <i>•</i> SECURE <i>•</i> GLOBAL</div>
+        <div class="eyebrow">
+          <span class="pulse"></span> FAST <i>•</i> SECURE <i>•</i> GLOBAL
+        </div>
+
         <h1>Your Freedom Online<br><span>Starts Here.</span></h1>
-        <p class="hero-sub">Simple VPN subscriptions for your everyday browsing. Choose a plan, submit your payment slip, and get your connection details after approval.</p>
-        <div class="hero-buttons"><a class="btn btn-primary btn-large" href="#plans">View Plans <span>→</span></a><a class="btn btn-outline btn-large" href="#how">How it works</a></div>
+
+        <p class="hero-sub">
+          Simple VPN subscriptions for your everyday browsing. Choose a plan,
+          submit your payment slip, and get your connection details after approval.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="btn btn-primary btn-large" href="#plans">View Plans <span>→</span></a>
+          <a class="btn btn-outline btn-large" href="#how">How it works</a>
+        </div>
+
         <div class="features">
           <div><span class="feature-icon">ϟ</span><strong>High Speed</strong><small>Stable connections</small></div>
           <div><span class="feature-icon">◇</span><strong>Privacy First</strong><small>Secure account flow</small></div>
@@ -38,51 +63,135 @@
           <div><span class="feature-icon">▣</span><strong>Easy Setup</strong><small>Connect your device</small></div>
         </div>
       </div>
+
       <div class="hero-art" aria-label="VPN connection illustration">
-        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-        <div class="globe"><span class="longitude"></span><span class="latitude"></span><span class="map-dot d1"></span><span class="map-dot d2"></span><span class="map-dot d3"></span></div>
-        <div class="device laptop"><div class="screen"><div class="screen-top"><span></span><span></span><span></span></div><div class="screen-logo">ϟ</div><b>Secure connection</b><small>Connected • Encrypted</small><div class="mini-map">✦ ───── ✦<br> ── ✦ ──</div></div><div class="laptop-base"></div></div>
-        <div class="device phone"><div class="phone-notch"></div><div class="phone-shield">ϟ</div><b>VKEHI VPN</b><small class="online"><span></span> Connected</small><div class="phone-line"></div><div class="phone-line short"></div></div>
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="globe">
+          <span class="longitude"></span>
+          <span class="latitude"></span>
+          <span class="map-dot d1"></span>
+          <span class="map-dot d2"></span>
+          <span class="map-dot d3"></span>
+        </div>
+
+        <div class="device laptop">
+          <div class="screen">
+            <div class="screen-top"><span></span><span></span><span></span></div>
+            <div class="screen-logo">ϟ</div>
+            <b>Secure connection</b>
+            <small>Connected • Encrypted</small>
+            <div class="mini-map">✦ ───── ✦<br> ── ✦ ──</div>
+          </div>
+          <div class="laptop-base"></div>
+        </div>
+
+        <div class="device phone">
+          <div class="phone-notch"></div>
+          <div class="phone-shield">ϟ</div>
+          <b>VKEHI VPN</b>
+          <small class="online"><span></span> Connected</small>
+          <div class="phone-line"></div>
+          <div class="phone-line short"></div>
+        </div>
+
         <div class="floating-tag">⌁ <span>Protected<br>connection</span></div>
       </div>
     </section>
 
     <section class="plans-section" id="plans">
       <div class="section-wrap">
-        <div class="section-heading"><span class="section-kicker">OUR PLANS</span><h2>Choose Your Perfect Plan</h2><p>Flexible subscriptions for your needs. Select a plan to continue.</p></div>
-        <div class="billing-switch" role="group" aria-label="Subscription duration">
-          <button class="billing active" data-days="30">30 Days</button><button class="billing" data-days="60">60 Days</button>
+        <div class="section-heading">
+          <span class="section-kicker">OUR PLANS</span>
+          <h2>Choose Your Perfect Plan</h2>
+          <p>Flexible subscriptions for your needs. Select a plan to continue.</p>
         </div>
+
+        <div class="billing-switch" role="group" aria-label="Subscription duration">
+          <button class="billing active" data-days="30">30 Days</button>
+          <button class="billing" data-days="60">60 Days</button>
+        </div>
+
         <div class="plan-grid">
           <article class="plan-card">
-            <div class="plan-top"><span class="plan-symbol">◈</span><span class="plan-label">STARTER</span></div>
-            <h3>Basic</h3><p class="plan-desc">For everyday browsing</p>
-            <div class="price"><span class="currency">Rs.</span><strong data-price="basic">350</strong><span class="duration">/ <span class="days-label">30</span> days</span></div>
-            <ul><li>100 GB data</li><li>1 device</li><li>High-speed connection</li><li>Customer dashboard</li></ul>
+            <div class="plan-top">
+              <span class="plan-symbol">◈</span>
+              <span class="plan-label">STARTER</span>
+            </div>
+            <h3>Basic</h3>
+            <p class="plan-desc">For everyday browsing</p>
+            <div class="price">
+              <span class="currency">Rs.</span>
+              <strong data-price="basic">350</strong>
+              <span class="duration">/ <span class="days-label">30</span> days</span>
+            </div>
+            <ul>
+              <li>100 GB data</li>
+              <li>1 device</li>
+              <li>High-speed connection</li>
+              <li>Customer dashboard</li>
+            </ul>
             <button class="btn btn-outline choose-plan" data-plan="Basic">Choose Basic</button>
           </article>
+
           <article class="plan-card popular">
             <div class="popular-badge">MOST POPULAR</div>
-            <div class="plan-top"><span class="plan-symbol">✧</span><span class="plan-label">BEST VALUE</span></div>
-            <h3>Standard</h3><p class="plan-desc">A balanced everyday plan</p>
-            <div class="price"><span class="currency">Rs.</span><strong data-price="standard">550</strong><span class="duration">/ <span class="days-label">30</span> days</span></div>
-            <ul><li>200 GB data</li><li>Up to 2 devices</li><li>High-speed connection</li><li>Customer dashboard</li></ul>
+            <div class="plan-top">
+              <span class="plan-symbol">✧</span>
+              <span class="plan-label">BEST VALUE</span>
+            </div>
+            <h3>Standard</h3>
+            <p class="plan-desc">A balanced everyday plan</p>
+            <div class="price">
+              <span class="currency">Rs.</span>
+              <strong data-price="standard">550</strong>
+              <span class="duration">/ <span class="days-label">30</span> days</span>
+            </div>
+            <ul>
+              <li>200 GB data</li>
+              <li>Up to 2 devices</li>
+              <li>High-speed connection</li>
+              <li>Customer dashboard</li>
+            </ul>
             <button class="btn btn-primary choose-plan" data-plan="Standard">Choose Standard</button>
           </article>
+
           <article class="plan-card">
-            <div class="plan-top"><span class="plan-symbol">✦</span><span class="plan-label">POWER USER</span></div>
-            <h3>Unlimited</h3><p class="plan-desc">For heavy daily usage</p>
-            <div class="price"><span class="currency">Rs.</span><strong data-price="unlimited">800</strong><span class="duration">/ <span class="days-label">30</span> days</span></div>
-            <ul><li>Unlimited* data</li><li>Up to 3 devices</li><li>High-speed connection</li><li>Customer dashboard</li></ul>
+            <div class="plan-top">
+              <span class="plan-symbol">✦</span>
+              <span class="plan-label">POWER USER</span>
+            </div>
+            <h3>Unlimited</h3>
+            <p class="plan-desc">For heavy daily usage</p>
+            <div class="price">
+              <span class="currency">Rs.</span>
+              <strong data-price="unlimited">800</strong>
+              <span class="duration">/ <span class="days-label">30</span> days</span>
+            </div>
+            <ul>
+              <li>Unlimited* data</li>
+              <li>Up to 3 devices</li>
+              <li>High-speed connection</li>
+              <li>Customer dashboard</li>
+            </ul>
             <button class="btn btn-outline choose-plan" data-plan="Unlimited">Choose Unlimited</button>
           </article>
         </div>
-        <p class="price-note">*Unlimited plan subject to fair-use rules. Prices shown are demo values and can be edited in <code>script.js</code> before launch.</p>
+
+        <p class="price-note">
+          *Unlimited plan subject to fair-use rules. Prices shown are demo values
+          and can be edited in <code>script.js</code> before launch.
+        </p>
       </div>
     </section>
 
     <section class="how-section section-wrap" id="how">
-      <div class="section-heading"><span class="section-kicker">GET CONNECTED</span><h2>How It Works</h2><p>Four simple steps to get started.</p></div>
+      <div class="section-heading">
+        <span class="section-kicker">GET CONNECTED</span>
+        <h2>How It Works</h2>
+        <p>Four simple steps to get started.</p>
+      </div>
+
       <div class="steps">
         <div class="step"><span class="step-num">01</span><div class="step-icon">♙</div><h3>Choose a Plan</h3><p>Select the subscription that suits you.</p></div>
         <div class="step-arrow">→</div>
@@ -94,35 +203,80 @@
       </div>
     </section>
 
-    <section class="about-section" id="about"><div class="section-wrap about-inner"><div><span class="section-kicker">ABOUT VKEHI VPN</span><h2>Simple. Clear. Connected.</h2><p>Manage your plan from one place. The website is designed to make subscription selection and payment review straightforward.</p></div><div class="about-stat"><strong>24/7</strong><span>Self-service dashboard design</span></div><div class="about-stat"><strong>3</strong><span>Flexible subscription options</span></div></div></section>
+    <section class="about-section" id="about">
+      <div class="section-wrap about-inner">
+        <div>
+          <span class="section-kicker">ABOUT VKEHI VPN</span>
+          <h2>Simple. Clear. Connected.</h2>
+          <p>Manage your plan from one place. The website is designed to make subscription selection and payment review straightforward.</p>
+        </div>
+        <div class="about-stat"><strong>24/7</strong><span>Self-service dashboard design</span></div>
+        <div class="about-stat"><strong>3</strong><span>Flexible subscription options</span></div>
+      </div>
+    </section>
   </main>
 
-  <footer><div class="section-wrap footer-inner"><a class="brand" href="#home"><span class="brand-mark">ϟ</span><span>VKEHI <b>VPN</b></span></a><p>Secure • Fast • Reliable</p><div class="footer-links"><a href="#plans">Plans</a><a href="#how">How it works</a><a href="#about">About</a><button class="text-button" data-open="loginModal">Customer login</button></div><small>© <span id="year"></span> VKEHI VPN. All rights reserved.</small></div></footer>
+  <footer>
+    <div class="section-wrap footer-inner">
+      <a class="brand" href="#home"><span class="brand-mark">ϟ</span><span>VKEHI <b>VPN</b></span></a>
+      <p>Secure • Fast • Reliable</p>
+      <div class="footer-links">
+        <a href="#plans">Plans</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <button class="text-button" data-open="loginModal">Customer login</button>
+      </div>
+      <small>© <span id="year"></span> VKEHI VPN. All rights reserved.</small>
+    </div>
+  </footer>
 
   <div class="modal-backdrop" id="loginModal" aria-hidden="true">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-      <button class="modal-close" data-close aria-label="Close">×</button><span class="modal-mark">ϟ</span><h2 id="loginTitle">Welcome to VKEHI VPN</h2><p>Customer sign-in preview</p>
-      <button class="btn google-btn" id="googleDemo"><span class="google-g">G</span> Continue with Google</button>
-      <div class="demo-notice">Demo UI only — Google authentication will be connected securely in the backend setup.</div>
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <span class="modal-mark">ϟ</span>
+      <h2 id="loginTitle">Welcome to VKEHI VPN</h2>
+      <p>Customer sign-in</p>
+      <button class="btn google-btn" id="googleDemo">
+        <span class="google-g">G</span> Continue with Google
+      </button>
+      <div class="demo-notice">Sign in securely with your Google account.</div>
     </section>
   </div>
 
   <div class="modal-backdrop" id="orderModal" aria-hidden="true">
     <section class="modal order-modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
-      <button class="modal-close" data-close aria-label="Close">×</button><span class="modal-mark">ϟ</span><h2 id="orderTitle">Start your subscription</h2><p id="selectedPlanText">Selected plan</p>
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <span class="modal-mark">ϟ</span>
+      <h2 id="orderTitle">Start your subscription</h2>
+      <p id="selectedPlanText">Selected plan</p>
+
       <form id="orderForm">
-        <label for="customerEmail">Email address</label><input id="customerEmail" type="email" placeholder="you@example.com" required>
-        <label for="paymentMethod">Payment method</label><select id="paymentMethod"><option>Bank transfer</option><option>Other (configure later)</option></select>
-        <label for="slipFile">Payment slip (optional in preview)</label><input id="slipFile" type="file" accept="image/*,.pdf">
+        <label for="customerEmail">Email address</label>
+        <input id="customerEmail" type="email" placeholder="you@example.com" required>
+
+        <label for="paymentMethod">Payment method</label>
+        <select id="paymentMethod">
+          <option>Bank transfer</option>
+          <option>Other (configure later)</option>
+        </select>
+
+        <label for="slipFile">Payment slip (optional in preview)</label>
+        <input id="slipFile" type="file" accept="image/*,.pdf">
+
         <button class="btn btn-primary btn-full" type="submit">Submit demo order</button>
       </form>
-      <div class="demo-notice">This preview does not send files, verify payments, or create a VPN account. A secure backend is required for live orders.</div>
+
+      <div class="demo-notice">
+        This preview does not send files, verify payments, or create a VPN account.
+        A secure backend is required for live orders.
+      </div>
     </section>
   </div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="script.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
