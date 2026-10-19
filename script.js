@@ -1805,7 +1805,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="badge-google-verified" style="font-size: 0.68rem; padding: 0.15rem 0.5rem; flex-shrink: 0;">Verified</span>
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-neon-blue btn-sm" id="btnMobileOpenDashboard" style="flex: 1; padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+            <button class="btn btn-neon-blue btn-sm" id="btn
+            MobileOpenDashboard" style="flex: 1; padding: 0.5rem 0.75rem; font-size: 0.8rem;">
               My Dashboard
             </button>
             <button class="btn btn-glass btn-sm" id="btnMobileSignOut" style="padding: 0.5rem 0.75rem; font-size: 0.8rem; color: #f87171; border-color: rgba(248,113,113,0.35);">
@@ -1913,17 +1914,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerAdminLink = document.getElementById('footerAdminLink');
   const footerBottomAdminLink = document.getElementById('footerBottomAdminLink');
 
-  function openAdminConsole() {
-    if (!adminModal) return;
-    adminModal.hidden = false;
-    syncOrdersFromCloud();
-    syncUsersFromCloud();
-    if (isAdminLoggedIn()) {
-      showAdminDashboard();
-    } else {
-      showAdminLogin();
-    }
-  }
+
+function openAdminConsole() {
+  if (!adminModal) return;
+
+  adminModal.hidden = false;
+  showAdminLogin();
+  window.handleAdminLogin();
+}
+
 
   if (btnNavAdmin) btnNavAdmin.addEventListener('click', openAdminConsole);
   if (footerAdminLink) footerAdminLink.addEventListener('click', openAdminConsole);
@@ -1947,12 +1946,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminUsers();
   }
 
-  window.handleAdminLogin = function() {
-    // Never authenticate an administrator using credentials embedded in public JavaScript.
-    // Admin access must be implemented with a server-side verified session/role before production.
-    setAdminLoggedIn(false);
-    showToast('Admin login is not securely configured yet. Public client-side credentials have been disabled.');
-  };
 
   const btnAdminLogout = document.getElementById('btnAdminLogout');
   if (btnAdminLogout) {
@@ -1963,6 +1956,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
+
+   
+window.handleAdminLogin = async function() {
+  if (!supabase) {
+    showToast('Supabase is not configured.');
+    return;
+  }
+
+  try {
+    const { data: { session }, error: sessionError } =
+      await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!session) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin +
+            window.location.pathname
+        }
+      });
+
+      if (error) throw error;
+      return;
+    }
+
+    const { data: { user }, error: userError } =
+      await supabase.auth.getUser();
+
+    if (userError) throw userError;
+
+    const email = user?.email?.toLowerCase();
+
+    if (!email) {
+      showToast('Google account eka verify karanna ba.');
+      return;
+    }
+
+    const { data: admin, error: adminError } = await supabase
+      .from('admin_users')
+      .select('email')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+
+    if (!admin) {
+      setAdminLoggedIn(false);
+      showAdminLogin();
+      showToast('Me Gmail ekata Admin access naha.');
+      return;
+    }
+
+    setAdminLoggedIn(true);
+    await syncOrdersFromCloud();
+    await syncUsersFromCloud();
+    showAdminDashboard();
+    showToast('Admin login successful.');
+
+  } catch (error) {
+    console.error('Admin login error:', error);
+    setAdminLoggedIn(false);
+    showAdminLogin();
+    showToast('Admin login failed. Please try again.');
+  }
+};
+
+
+
+   
+
+   
   // Admin Tab Navigation
   const adminTabBtns = document.querySelectorAll('.admin-tab-btn');
   adminTabBtns.forEach(btn => {
