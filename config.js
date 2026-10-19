@@ -35,5 +35,5 @@ window.VKEHI_CONFIG = {
 
   // Supabase Configuration
   supabaseUrl: "https://xkyuuhivuqdkixidkaio.supabase.co",
-  supabaseAnonKey: "sb_publishable_BF-rogUJeQZ938VPcK7-cg_Xg9rY488"
+  supabaseAnonKey: "sb_publishable_4y3wHYGS3aBBCigaQcsiZQ_vJ0NV2Dv"
 };
