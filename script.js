@@ -177,30 +177,50 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) {}
   }
 
-  async function pushOrderToCloud(ord) {
-    if (!supabase || !ord) return;
-    try {
-      await supabase.from('orders').upsert({
-        id: ord.id,
-        user_email: ord.userEmail,
-        plan_id: ord.planId,
-        plan_name: ord.planName,
-        duration: ord.duration,
-        location: ord.location,
-        isp: ord.isp,
-        amount: ord.amount,
-        whatsapp: ord.whatsapp,
-        telegram: ord.telegram,
-        payment_method: ord.paymentMethod,
-        slip_url: ord.slipUrl,
-        status: ord.status,
-        config: ord.config,
-        sub_link: ord.subLink || null,
-        expiry_date: ord.expiryDate,
-        created_at: ord.date
-      });
-    } catch (e) {}
+async function pushOrderToCloud(ord) {
+  if (!supabase || !ord) {
+    console.error("Supabase or order is missing.");
+    return false;
   }
+
+  const orderData = {
+    id: String(ord.id),
+    user_email: ord.userEmail,
+    plan_id: ord.planId,
+    plan_name: ord.planName,
+    duration: ord.duration,
+    location: ord.location,
+    isp: ord.isp,
+    amount: ord.amount,
+    whatsapp: ord.whatsapp,
+    telegram: ord.telegram || null,
+    payment_method: ord.paymentMethod,
+    slip_url: ord.slipUrl,
+    status: ord.status,
+    config: ord.config || null,
+    expiry_date: ord.expiryDate || null,
+    "created-at": ord.date
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .upsert(orderData, { onConflict: "id" })
+      .select("id")
+      .single();
+
+    if (error) {
+      console.error("Order save failed:", error.message, error);
+      return false;
+    }
+
+    console.log("Order saved successfully:", data.id);
+    return true;
+  } catch (error) {
+    console.error("Order save exception:", error);
+    return false;
+  }
+}
 
   async function syncUsersFromCloud() {
     if (!supabase) return;
