@@ -1172,33 +1172,33 @@ async function pushOrderToCloud(ord) {
     return [];
   }
 
-  function saveStoredOrders(orders) {
+
+function saveStoredOrders(orders) {
+  try {
     localStorage.setItem('vkehi_orders', JSON.stringify(orders));
-  }
+    return true;
+  } catch (e) {
+    console.warn('Local order storage is full:', e);
 
-  function getCurrentUser() {
+    // Retry without embedding large receipt images in localStorage.
+    const compactOrders = orders.map(order => ({
+      ...order,
+      slipUrl: typeof order.slipUrl === 'string' &&
+        order.slipUrl.startsWith('data:')
+          ? ''
+          : order.slipUrl
+    }));
+
     try {
-      const user = localStorage.getItem('vkehi_current_user');
-      if (user) {
-        const parsed = JSON.parse(user);
-        if (parsed.email === 'client@vkehivpn.lk' || parsed.email === 'client.vip@gmail.com') {
-          localStorage.removeItem('vkehi_current_user');
-          return null;
-        }
-        return parsed;
-      }
-    } catch (e) {}
-    return null; // Guest user by default until signed in
-  }
-
-  function setCurrentUser(user) {
-    if (user) {
-      localStorage.setItem('vkehi_current_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('vkehi_current_user');
+      localStorage.setItem('vkehi_orders', JSON.stringify(compactOrders));
+      return true;
+    } catch (retryError) {
+      console.error('Could not save orders locally:', retryError);
+      return false;
     }
-    updateNavAuthUI();
   }
+}
+
 
   function getStoredUsers() {
     try {
