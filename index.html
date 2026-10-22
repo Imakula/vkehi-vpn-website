@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#00f5ff">
+  
+  <title>VKEHI VPN | Secure Connections. Fast Performance. Sri Lanka VPN</title>
+  <meta name="description" content="VKEHI VPN – Ultra high-speed V2Ray tunneling engineered for Sri Lanka ISPs (Dialog, Mobitel, Airtel, Hutch, SLT Mobitel). Ultra-low latency, zero logs, 4K streaming.">
+  <meta name="keywords" content="VKEHI VPN, Sri Lanka VPN, Dialog Zoom VPN, SLT Netflix VPN, NetMod VPN, V2Box, Mobitel Unlimited, Airtel VPN">
+  
+  <meta property="og:title" content="VKEHI VPN | High-Speed Sri Lanka VPN">
+  <meta property="og:description" content="Secure Connections. Fast Performance. Trusted VPN Solutions in Sri Lanka.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="shortcut icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Stylesheet with 3D Cyber & Neon Theme -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Three.js CDN for 3D Cyber Hologram -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Supabase & App Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Cyber Matrix Luxury Preloader Screen (Fast Initial Page Load Animation)
+       ========================================================================== -->
+  <div class="site-preloader" id="sitePreloader">
+    <div class="preloader-content">
+      <div class="preloader-rings-wrapper">
+        <div class="preloader-ring preloader-ring-outer"></div>
+        <div class="preloader-ring preloader-ring-inner"></div>
+        <div class="preloader-logo-glow"></div>
+        <img src="logo.png" alt="VKEHI Loading Crest" class="preloader-logo">
+      </div>
+      <div class="preloader-brand">VKEHI <span>VPN</span></div>
+      <div class="preloader-status" id="preloaderStatusText">INITIALIZING SECURE VKEHI TUNNEL...</div>
+      <div class="preloader-progress-track">
+        <div class="preloader-progress-bar" id="preloaderProgressBar"></div>
+      </div>
+      <div class="preloader-telemetry">
+        <span>● 10 Gbps Pipe</span>
+        <span>● Zero Throttling</span>
+        <span>● Quantum VLESS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic 3D Aurora Borealis Ambient Lighting -->
+  <div class="aurora-container">
+    <div class="aurora-orb aurora-orb-1"></div>
+    <div class="aurora-orb aurora-orb-2"></div>
+    <div class="aurora-orb aurora-orb-3"></div>
+  </div>
+  <div class="cyber-grid"></div>
+
+  <!-- ==========================================================================
+       Site Header
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="#home" class="brand-logo">
+        <img src="logo.png" alt="VKEHI VPN Official Logo" class="brand-logo-img">
+        <div class="brand-text">VKEHI <span>VPN</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#channels">ISP Channels</a></li>
+        <li><a href="#pricing">Plans</a></li>
+        <li><a href="#apps">Apps</a></li>
+        <li><a href="#guide" id="navGuideBtn">Guide</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- WhatsApp Direct Contact Button (Single Desktop Contact) -->
+        <a href="https://wa.me/94769196703" target="_blank" class="btn btn-glass btn-sm nav-btn-desktop" id="btnNavContact" title="WhatsApp Support +94769196703" style="color: #25d366; border-color: rgba(37,211,102,0.35); gap: 0.35rem; padding: 0.42rem 0.75rem; font-weight: 700; text-decoration: none;">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.077-1.114-.055-.386-.122-.888-.306-1.533-.679-1.378-.797-2.316-2.222-2.385-2.316-.069-.094-.582-.774-.582-1.478 0-.704.368-1.05.5-1.196.132-.146.289-.182.386-.182.097 0 .194.001.277.005.088.005.207-.033.323.248.122.293.415 1.012.452 1.087.037.075.061.163.012.261-.049.098-.073.159-.146.244-.073.085-.154.19-.22.256-.073.073-.15.152-.064.299.085.146.379.624.813 1.011.558.498 1.03.652 1.176.725.146.073.232.061.319-.037.086-.098.368-.429.466-.576.098-.146.196-.122.33-.073.134.049.851.401.997.474.146.073.244.11.28.171.036.061.036.353-.108.758z"/></svg>
+          <span>Contact</span>
+        </a>
+
+        <!-- Dark / Light Mode Toggle (Always visible on all screens) -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light mode" title="Toggle Theme">
+          <!-- Moon icon (dark mode) -->
+          <span class="theme-icon-moon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </span>
+          <!-- Sun icon (light mode) -->
+          <span class="theme-icon-sun">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+        </button>
+
+        <!-- Admin Console Quick Access (Staff Portal - Desktop) -->
+        <button class="btn btn-glass btn-sm nav-btn-desktop" id="btnNavAdmin" title="VKEHI Staff Admin Console" style="color: #60a5fa; border-color: rgba(96,165,250,0.35); gap: 0.35rem; padding: 0.42rem 0.75rem; font-weight: 700;">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <span>Admin</span>
+        </button>
+
+        <!-- Cart Quick Access (Visible only when signed in) -->
+        <button class="nav-icon-btn" id="btnNavCart" title="Active Cart" aria-label="Shopping Cart" style="display: none;">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <span class="badge-count" id="cartCountBadge" style="display: none;">0</span>
+        </button>
+
+        <!-- Notification Bell Dropdown (Visible only when signed in) -->
+        <div class="notify-wrapper" style="position: relative; display: none;">
+          <button class="nav-icon-btn" id="btnNavNotify" title="Notifications" aria-label="Notifications">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="badge-count" id="notifyCountBadge">1</span>
+          </button>
+          
+          <div class="notify-dropdown" id="notifyDropdown" hidden>
+            <div class="notify-header">
+              <span style="font-weight: 800; font-size: 0.85rem; color: #fff;">Notifications</span>
+              <button class="btn-clear-notify" id="btnClearNotify">Mark All Read</button>
+            </div>
+            <div class="notify-list" id="notifyList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Button (Visible only when signed in - Desktop) -->
+        <button class="btn btn-glass btn-sm nav-btn-desktop" id="btnOpenDashboard" style="display: none;">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          <span>Dashboard</span>
+        </button>
+
+        <!-- User Authentication & Session State -->
+        <div id="navAuthGroup">
+          <button class="btn btn-neon-blue btn-sm" id="btnOpenAuth">
+            Sign In
+          </button>
+        </div>
+        <div id="navUserGroup" style="display: none; align-items: center; gap: 0.5rem;">
+          <button class="btn btn-glass btn-sm nav-user-pill" id="navUserAvatarBtn" style="padding: 0.45rem 0.85rem; gap: 0.5rem;" title="Account Profile">
+            <span id="navUserInitial" style="width: 1.45rem; height: 1.45rem; border-radius: 50%; background: linear-gradient(135deg, #00f5ff, #3b82f6); color: #fff; font-weight: 800; font-size: 0.72rem; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">U</span>
+            <span id="navUserEmailShort" class="nav-user-label" style="font-size: 0.8rem; font-weight: 700; max-width: 105px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">User</span>
+          </button>
+          <button class="btn btn-glass btn-sm nav-btn-desktop" id="btnSignOut" title="Sign Out" style="color: #f87171; border-color: rgba(248, 113, 113, 0.3); padding: 0.45rem 0.65rem;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Toggle Button (Visible on mobile/tablet) -->
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation Menu" title="Menu">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer / Dropdown Panel -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer" hidden>
+      <!-- Mobile User Status Panel -->
+      <div class="mobile-nav-user-panel" id="mobileNavUserPanel">
+        <!-- Rendered by JS based on sign-in state -->
+      </div>
+
+      <ul class="mobile-nav-links">
+        <li><a href="#features" class="mobile-nav-link"><span class="mobile-nav-icon">✨</span> Features</a></li>
+        <li><a href="#channels" class="mobile-nav-link"><span class="mobile-nav-icon">⚡</span> ISP Channels</a></li>
+        <li><a href="#pricing" class="mobile-nav-link"><span class="mobile-nav-icon">💎</span> Plans &amp; Pricing</a></li>
+        <li><a href="#apps" class="mobile-nav-link"><span class="mobile-nav-icon">📱</span> Apps &amp; Setup</a></li>
+        <li><a href="#guide" id="mobileNavGuideBtn" class="mobile-nav-link"><span class="mobile-nav-icon">📖</span> Configuration Guide</a></li>
+        <li><a href="#faq" class="mobile-nav-link"><span class="mobile-nav-icon">❓</span> FAQ</a></li>
+        <li><a href="https://wa.me/94769196703" target="_blank" class="mobile-nav-link" style="color: #25d366; font-weight: 700;"><span class="mobile-nav-icon">💬</span> WhatsApp Support</a></li>
+      </ul>
+
+      <div class="mobile-nav-footer">
+        <div class="mobile-theme-switch-row">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🎨 Appearance Theme:</span>
+            <strong id="mobileThemeStatus" style="color: #00f5ff; font-size: 0.8rem;">Dark Mode</strong>
+          </span>
+          <button class="theme-toggle-btn" id="mobileThemeToggleBtn" aria-label="Toggle theme on mobile" title="Toggle Theme">
+            <span class="theme-icon-moon">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </span>
+            <span class="theme-icon-sun">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </span>
+          </button>
+        </div>
+        <button class="btn btn-glass btn-sm" id="btnMobileNavAdmin" style="width: 100%; margin-top: 0.75rem; color: #60a5fa; border-color: rgba(96,165,250,0.35); font-weight: 700;">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Staff Admin Console
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       Hero Section with 3D Hologram & Floating Chips
+       ========================================================================== -->
+  <section class="hero-section" id="home">
+    
+    <!-- 3D Interactive Cyber Globe Canvas -->
+    <div class="hero-3d-canvas-container">
+      <canvas id="hero3dCanvas"></canvas>
+    </div>
+
+    <div class="container hero-content">
+      <!-- 3D Floating Luxury Insignia -->
+      <div class="hero-logo-wrapper">
+        <div class="hero-logo-glow"></div>
+        <img src="logo.png" alt="VKEHI VPN Official Crest" class="hero-logo-img">
+      </div>
+
+      <div class="hero-badge">
+        <div class="pulse-dot-cyan"></div>
+        <span>VKEHI NETWORK PRIVACY</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="neon-shimmer-title">VKEHI VPN</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Secure Connections. Fast Performance. Trusted VPN Solutions in Sri Lanka with Direct Backbone Routing.
+      </p>
+
+      <!-- 3D Floating Interactive Chips -->
+      <div class="hero-floating-pills">
+        <div class="floating-pill">
+          <span style="color: #00f5ff;">⚡</span>
+          <span>10 Gbps Low-Hop Singapore Pipe</span>
+        </div>
+        <div class="floating-pill">
+          <span style="color: #10b981;">🛡️</span>
+          <span>Quantum VLESS Reality Active</span>
+        </div>
+        <div class="floating-pill">
+          <span style="color: #f59e0b;">🇱🇰</span>
+          <span>Zero-Throttling LK Carrier Bypass</span>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#pricing" class="btn btn-primary btn-lg">
+          Explore Our Service
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#features" class="btn btn-glass btn-lg">
+          Explore Details
+        </a>
+        <button class="btn btn-glass btn-lg" id="heroGuideBtn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          How To Use
+        </button>
+      </div>
+
+      <div class="hero-stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">3,500+</div>
+          <div class="stat-label">Paid Users</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">99.9%</div>
+          <div class="stat-label">Network Uptime</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">&lt; 15ms</div>
+          <div class="stat-label">LK Backbone Latency</div>
+        </div>
+      </div>
+
+      <a href="#channels" class="scroll-indicator">
+        <span>Scroll to Explore</span>
+        <div class="scroll-line"></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ISP Integrations Marquee Banner
+       ========================================================================== -->
+  <section class="isp-marquee-section" id="channels">
+    <div class="container" style="text-align: center; margin-bottom: 1.5rem;">
+      <span class="section-eyebrow">FULLY OPTIMIZED CHANNELS</span>
+      <h3 class="section-heading-sm">Direct Backbone ISP Integrations</h3>
+      <p style="color: var(--text-dim); font-size: 0.875rem; margin-top: 0.35rem;">
+        Only the limits of your own ISP package apply. Zero throttling on all Sri Lankan carriers.
+      </p>
+    </div>
+
+    <div class="marquee-container">
+      <div class="marquee-track" id="marqueeTrack">
+        <!-- Rendered via JS for seamless looping -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Bento Grid Feature Showcase (Interactive 3D Cards)
+       ========================================================================== -->
+  <section class="bento-section" id="features">
+    <div class="container card-3d-wrapper">
+      <div class="bento-grid">
+        
+        <!-- Bento Card 1 (Span 8) -->
+        <div class="bento-card bento-col-8 card-3d">
+          <div class="bento-icon-wrapper">
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div>
+            <h3>Built on Reliability. Proven by Experience.</h3>
+            <p>
+              Thousands of users trust VKEHI VPN daily for ultra-fast and stable connectivity. Our reputation is built on consistent performance, dedicated Sri Lanka edge nodes, and true user satisfaction.
+            </p>
+            <div class="bento-badges">
+              <span class="bento-badge-pill">Growing-User-Base</span>
+              <span class="bento-badge-pill">Proven-Stability</span>
+              <span class="bento-badge-pill">Zero-Throttling</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 2 (Span 4) -->
+        <div class="bento-card bento-col-4 card-3d">
+          <div class="bento-icon-wrapper">
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <h3>Speed You Can Rely On.</h3>
+            <p>
+              Optimized for 4K video streaming and low-latency competitive gaming with high-bandwidth 10Gbps Singapore pipes.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bento Card 3 (Span 4) -->
+        <div class="bento-card bento-col-4 card-3d">
+          <div class="bento-icon-wrapper">
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <h3>Total Anonymity.</h3>
+            <p>
+              We prioritize your privacy with advanced military encryption and strict no-logs policies keeping your activity protected.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bento Card 4 (Span 8) -->
+        <div class="bento-card bento-col-8 card-3d">
+          <div class="bento-icon-wrapper">
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <h3>Global Infrastructure.</h3>
+            <p>
+              Powered by VKEHI Network. Multi-cluster load balancing across high-speed nodes in Singapore and direct Sri Lanka low-hop gateways.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Engineered for Absolute Control (System Simulator)
+       ========================================================================== -->
+  <section class="control-section">
+    <div class="container card-3d-wrapper">
+      <div class="control-grid">
+        
+        <div>
+          <span class="section-eyebrow">GLOBAL INFRASTRUCTURE</span>
+          <h2 class="control-heading">
+            Engineered for <br>
+            <span class="blue-cyan-gradient">Absolute Control.</span>
+          </h2>
+          <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 300;">
+            Our infrastructure is built on proprietary protocols that bypass even the most advanced network restrictions and deep packet inspection.
+          </p>
+
+          <div class="feature-point-list">
+            <div class="feature-point-item">
+              <div class="feature-point-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <h4>Quantum-Resistant Encryption</h4>
+                <p>Advanced Xray VLESS Reality encryption protocols.</p>
+              </div>
+            </div>
+
+            <div class="feature-point-item">
+              <div class="feature-point-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div>
+                <h4>Dedicated Hardware Resources</h4>
+                <p>No shared bottlenecks, isolated CPU/RAM bandwidth per cluster.</p>
+              </div>
+            </div>
+
+            <div class="feature-point-item">
+              <div class="feature-point-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              </div>
+              <div>
+                <h4>Real-time Monitoring &amp; Auto-Failover</h4>
+                <p>24/7 automated node health surveillance and load balancing.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulator Glass Console (3D Tiltable & Live Animated) -->
+        <div class="simulator-box card-3d">
+          <div class="simulator-header">
+            <div class="status-indicator-live">
+              <div class="status-dot-green"></div>
+              <span>Network Status: Optimal</span>
+            </div>
+            <div class="font-mono" style="font-size: 0.75rem; color: var(--neon-cyan); font-weight: 800; letter-spacing: 0.05em;">
+              VKEHI_CORE: v2.4.0
+            </div>
+          </div>
+
+          <!-- Live Metrics Grid -->
+          <div class="sim-metrics-grid">
+            <div class="sim-metric-item">
+              <div class="sim-metric-label">Throughput</div>
+              <div class="sim-metric-val" id="simThroughput">842.4 Mbps</div>
+            </div>
+            <div class="sim-metric-item">
+              <div class="sim-metric-label">SG Latency</div>
+              <div class="sim-metric-val" id="simPing" style="color: #10b981;">11 ms</div>
+            </div>
+            <div class="sim-metric-item">
+              <div class="sim-metric-label">Active Pipes</div>
+              <div class="sim-metric-val" id="simTunnels">1,248</div>
+            </div>
+          </div>
+
+          <!-- Cluster Alpha -->
+          <div class="cluster-load-item">
+            <div class="cluster-load-label">
+              <span>Node Cluster Alpha (SG Edge 1)</span>
+              <strong id="loadValAlpha">42% Load</strong>
+            </div>
+            <div class="cluster-progress-bar">
+              <div class="cluster-progress-fill" id="loadBarAlpha" style="width: 42%;"></div>
+            </div>
+          </div>
+
+          <!-- Cluster Beta -->
+          <div class="cluster-load-item">
+            <div class="cluster-load-label">
+              <span>Node Cluster Beta (SG Edge 2)</span>
+              <strong id="loadValBeta">68% Load</strong>
+            </div>
+            <div class="cluster-progress-bar">
+              <div class="cluster-progress-fill" id="loadBarBeta" style="width: 68%;"></div>
+            </div>
+          </div>
+
+          <!-- Cluster Gamma -->
+          <div class="cluster-load-item">
+            <div class="cluster-load-label">
+              <span>Node Cluster Gamma (LK Residential)</span>
+              <strong id="loadValGamma">81% Load</strong>
+            </div>
+            <div class="cluster-progress-bar">
+              <div class="cluster-progress-fill" id="loadBarGamma" style="width: 81%;"></div>
+            </div>
+          </div>
+
+          <!-- Equalizer Footer -->
+          <div class="simulator-footer">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-dim);">
+                Global Traffic Flow
+              </span>
+              <span style="font-size: 0.65rem; color: #10b981; font-weight: 700;">• SYNCED</span>
+            </div>
+            <div class="equalizer-bars">
+              <div class="equalizer-bar" style="animation-delay: 0.1s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.4s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.2s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.7s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.3s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.6s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.15s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.5s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.25s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.8s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.35s;"></div>
+              <div class="equalizer-bar" style="animation-delay: 0.65s;"></div>
+            </div>
+          </div>
+
+          <!-- Live Telemetry Stream Ticker -->
+          <div class="sim-telemetry-log">
+            <span class="log-indicator">● LIVE EVENT</span>
+            <span id="simLogText">[XTLS-REALITY] Handshake verified via Singapore Gateway Alpha (0.8ms)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Pricing Architecture Section
+       ========================================================================== -->
+  <section class="pricing-section" id="pricing">
+    <div class="container card-3d-wrapper">
+      
+      <div class="section-header-center">
+        <span class="section-eyebrow">PRICING ARCHITECTURE</span>
+        <h2 class="section-title">Select Your Choice</h2>
+        <p class="section-desc">
+          Choose the amount of data you require based on your everyday streaming &amp; gaming needs.
+        </p>
+      </div>
+
+      <!-- Controls: Location Toggle & Duration Toggle -->
+      <div class="pricing-controls-wrapper">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+          
+          <!-- Server Location Switcher -->
+          <div class="pill-toggle-group">
+            <button class="toggle-pill-btn active" id="btnLocSG">
+              <span class="flag-icon-wrapper"><img src="sg-flag.png" alt="Singapore" class="flag-icon flag-wave"></span>
+              <span>SG IP</span>
+              <span class="badge-micro">Default</span>
+            </button>
+            <button class="toggle-pill-btn" id="btnLocLK">
+              <span class="flag-icon-wrapper"><img src="lk-flag.png" alt="Sri Lanka" class="flag-icon flag-wave"></span>
+              <span>LK IP</span>
+              <span class="badge-micro" style="background: rgba(245, 158, 11, 0.35);">Manual</span>
+            </button>
+          </div>
+
+          <!-- Duration Switcher -->
+          <div class="pill-toggle-group">
+            <button class="toggle-pill-btn active" id="btnDur30">
+              <span>30 Days</span>
+            </button>
+            <button class="toggle-pill-btn" id="btnDur60">
+              <span>60 Days</span>
+              <span class="badge-micro" style="background: rgba(0, 245, 255, 0.4);">Best Value</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Plan Cards Grid -->
+      <div class="pricing-grid" id="pricingCardsGrid">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Connectivity Suite (Setup Your Device)
+       ========================================================================== -->
+  <section class="connectivity-section" id="apps">
+    <div class="container card-3d-wrapper">
+      
+      <div class="section-header-center">
+        <span class="section-eyebrow">CONNECTIVITY SUITE</span>
+        <h2 class="section-title">Setup Your Device</h2>
+        <p class="section-desc">
+          Get connected in minutes with our recommended V2Ray clients for every operating system.
+        </p>
+      </div>
+
+      <div class="devices-grid">
+        
+        <!-- Android Column -->
+        <div class="device-card card-3d">
+          <div class="device-header">
+            <div class="device-icon-box">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4144 13.8533 8.077 12 8.077c-1.8533 0-3.5902.3374-5.1368.8727L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/></svg>
+            </div>
+            <h3 class="device-title">Android</h3>
+          </div>
+          <div class="app-items-wrapper">
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">NM</div>
+                <div>
+                  <div class="app-name">NetMod VPN</div>
+                  <div class="app-source">Google Play</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://play.google.com/store/apps/details?id=com.netmod.syna" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('NetMod Android')">Guide</button>
+              </div>
+            </div>
+
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">V2</div>
+                <div>
+                  <div class="app-name">V2Box VPN</div>
+                  <div class="app-source">Google Play</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://play.google.com/store/apps/details?id=dev.hexasoftware.v2box" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('V2Box Android')">Guide</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Windows Column -->
+        <div class="device-card card-3d">
+          <div class="device-header">
+            <div class="device-icon-box">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+            </div>
+            <h3 class="device-title">Windows</h3>
+          </div>
+          <div class="app-items-wrapper">
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">NM</div>
+                <div>
+                  <div class="app-name">NetMod PC</div>
+                  <div class="app-source">Direct exe</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://sourceforge.net/projects/netmod/" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('NetMod Windows')">Guide</button>
+              </div>
+            </div>
+
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">VN</div>
+                <div>
+                  <div class="app-name">v2rayN 64-bit</div>
+                  <div class="app-source">GitHub</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://github.com/2dust/v2rayN/releases" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('v2rayN Windows')">Guide</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- iOS Column -->
+        <div class="device-card card-3d">
+          <div class="device-header">
+            <div class="device-icon-box">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.9.04-2.02.61-2.67 1.37-.58.67-1.1 1.74-.96 2.78 1.02.08 2.08-.53 2.71-1.28z"/></svg>
+            </div>
+            <h3 class="device-title">iOS / iPadOS</h3>
+          </div>
+          <div class="app-items-wrapper">
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">V2</div>
+                <div>
+                  <div class="app-name">V2Box</div>
+                  <div class="app-source">App Store</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('V2Box iOS')">Guide</button>
+              </div>
+            </div>
+
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">NP</div>
+                <div>
+                  <div class="app-name">NPV Tunnel</div>
+                  <div class="app-source">App Store</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://apps.apple.com/us/app/npv-tunnel/id1629465476" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('NPV Tunnel iOS')">Guide</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- macOS Column -->
+        <div class="device-card card-3d">
+          <div class="device-header">
+            <div class="device-icon-box">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            </div>
+            <h3 class="device-title">macOS</h3>
+          </div>
+          <div class="app-items-wrapper">
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">V2</div>
+                <div>
+                  <div class="app-name">V2Box Mac</div>
+                  <div class="app-source">Mac App Store</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('V2Box Mac')">Guide</button>
+              </div>
+            </div>
+
+            <div class="app-item-card">
+              <div class="app-info">
+                <div class="app-icon">FX</div>
+                <div>
+                  <div class="app-name">FoXray</div>
+                  <div class="app-source">Mac App Store</div>
+                </div>
+              </div>
+              <div class="app-actions">
+                <a href="https://apps.apple.com/us/app/foxray/id6448898396" target="_blank" class="btn-get">Get</a>
+                <button class="btn-guide" onclick="openAppGuide('FoXray Mac')">Guide</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FAQ Section
+       ========================================================================== -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      
+      <div class="section-header-center">
+        <span class="section-eyebrow">COMMON INQUIRIES</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">
+          Everything you need to know about VKEHI VPN, Sri Lanka ISP bypasses and protocols.
+        </p>
+      </div>
+
+      <div class="faq-list">
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Does this VPN consume my main standard internet quota?</span>
+            <div class="faq-toggle-icon">▼</div>
+          </div>
+          <div class="faq-answer">
+            No! VKEHI VPN routes through your ISP's specialized unlimited package (e.g. Dialog Zoom 724, Dialog TikTok, Airtel Zoom 215, SLT Netflix, Mobitel Unlimited). Your standard daytime/nighttime quota remains completely untouched.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>What is the difference between SG IP and LK IP?</span>
+            <div class="faq-toggle-icon">▼</div>
+          </div>
+          <div class="faq-answer">
+            <strong>SG IP (Singapore)</strong> is the default, ultra-fast route optimized for international browsing, 4K streaming, downloads, and low latency international gaming.<br><br>
+            <strong>LK IP (Sri Lanka)</strong> retains a Sri Lankan residential IP address while tunneling through restrictions, perfect for local banking apps, government portals, and local services that block foreign IPs.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How fast is the setup process after purchasing?</span>
+            <div class="faq-toggle-icon">▼</div>
+          </div>
+          <div class="faq-answer">
+            Once you submit your order and payment receipt, our team verifies and delivers your V2Ray config link directly to your customer dashboard and via WhatsApp / Telegram within 10 to 30 minutes.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I use my subscription on multiple devices?</span>
+            <div class="faq-toggle-icon">▼</div>
+          </div>
+          <div class="faq-answer">
+            Yes! Depending on your chosen tier: Starter supports 1 device, Standard supports 2 simultaneous devices, Pro Gamer supports 3 devices, and Unlimited VIP supports up to 5 simultaneous devices.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Which client app do you recommend for Android and Windows?</span>
+            <div class="faq-toggle-icon">▼</div>
+          </div>
+          <div class="faq-answer">
+            For Android, we recommend <strong>NetMod VPN Client</strong> or <strong>V2Box</strong>. For Windows PC, we recommend <strong>NetMod PC</strong> or <strong>v2rayN</strong>. All configs are 100% compatible.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Site Footer
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#home" class="brand-logo">
+            <img src="logo.png" alt="VKEHI VPN Official Logo" class="brand-logo-img">
+            <div class="brand-text">VKEHI <span>VPN</span></div>
+          </a>
+          <p>
+            Secure Connections. Fast Performance. Trusted high-speed tunneling engineered for Sri Lanka with Zero Throttling.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#channels">Backbone ISPs</a></li>
+            <li><a href="#pricing">Pricing Plans</a></li>
+            <li><a href="#apps">Download Apps</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Direct Support</h5>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" id="footerWhatsappLink">WhatsApp Support</a></li>
+            <li><a href="javascript:void(0)" id="footerTelegramLink">Telegram Channel</a></li>
+            <li><a href="#faq">FAQ &amp; Troubleshooting</a></li>
+            <li><a href="javascript:void(0)" id="footerAdminLink" style="color: #60a5fa; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">🛡️ Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>System Status</h5>
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem;">
+            <div class="status-dot-green"></div>
+            <span style="font-size: 0.85rem; color: #10b981; font-weight: 700; text-shadow: 0 0 10px rgba(16,185,129,0.4);">All Systems Operational</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem; font-family: var(--font-mono);">
+            99.98% 30-Day Backbone Uptime
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="currentYear">2026</span> VKEHI VPN. All rights reserved.</div>
+        <div>
+          <span>Engineered for Privacy in Sri Lanka.</span>
+          <span style="margin: 0 0.5rem; color: var(--border-subtle);">|</span>
+          <a href="javascript:void(0)" id="footerBottomAdminLink" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">Staff Login</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       Interactive 3-Step Checkout Modal
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="checkoutModal" hidden>
+    <div class="checkout-card-container">
+      <button class="modal-close-btn" id="btnCloseCheckout">&times;</button>
+
+      <!-- Steps Indicator -->
+      <div class="checkout-steps-bar">
+        <div class="checkout-step-indicator completed" id="stepIndicator1">
+          <div class="step-number">✓</div>
+          <span>Plan</span>
+        </div>
+        <div class="checkout-step-indicator active" id="stepIndicator2">
+          <div class="step-number">2</div>
+          <span>ISP Package</span>
+        </div>
+        <div class="checkout-step-indicator" id="stepIndicator3">
+          <div class="step-number">3</div>
+          <span>Payment</span>
+        </div>
+      </div>
+
+      <!-- STEP 2: SELECT NETWORK PACKAGE -->
+      <div id="checkoutStep2">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 0.35rem;">
+            Select Network Package
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Choose your network provider to optimize your connection payload.
+          </p>
+        </div>
+
+        <!-- ISP Filter Tabs -->
+        <div class="isp-filter-tabs" id="ispFilterTabs">
+          <button class="isp-tab-btn active" data-isp="Dialog">
+            <img src="dialog.png" alt="Dialog" class="isp-tab-logo">
+            <span>Dialog</span>
+          </button>
+          <button class="isp-tab-btn" data-isp="Mobitel">
+            <img src="mobitel.png" alt="Mobitel" class="isp-tab-logo">
+            <span>Mobitel</span>
+          </button>
+          <button class="isp-tab-btn" data-isp="Airtel">
+            <img src="airtel.webp" alt="Airtel" class="isp-tab-logo">
+            <span>Airtel</span>
+          </button>
+          <button class="isp-tab-btn" data-isp="Hutch">
+            <img src="hutch.jpg" alt="Hutch" class="isp-tab-logo">
+            <span>Hutch</span>
+          </button>
+          <button class="isp-tab-btn" data-isp="SLT">
+            <img src="slt.png" alt="SLT" class="isp-tab-logo">
+            <span>SLT Mobitel</span>
+          </button>
+        </div>
+
+        <!-- ISP Packages List Grid -->
+        <div class="isp-packages-list" id="ispPackagesList">
+          <!-- Populated by script.js -->
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem;">
+          <button class="btn btn-glass btn-sm" id="btnBackToStep1">Back to Plans</button>
+          <button class="btn btn-neon-blue btn-sm" id="btnProceedToStep3" disabled>Continue to Payment →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: SECURE CHECKOUT & PAYMENT -->
+      <div id="checkoutStep3" hidden>
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 0.35rem;">
+            Secure Checkout
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Complete your order and upload your payment slip for instant activation.
+          </p>
+        </div>
+
+        <!-- Order Summary Box -->
+        <div class="checkout-summary-box">
+          <div class="summary-row">
+            <span>Selected Plan:</span>
+            <strong id="summaryPlanName" style="color: #fff;">Standard (200 GB)</strong>
+          </div>
+          <div class="summary-row">
+            <span>Server Location:</span>
+            <strong id="summaryLocation" style="color: #00f5ff;">🇸🇬 Singapore (SG IP)</strong>
+          </div>
+          <div class="summary-row">
+            <span>Duration:</span>
+            <strong id="summaryDuration" style="color: #fff;">30 Days</strong>
+          </div>
+          <div class="summary-row">
+            <span>Selected ISP Package:</span>
+            <strong id="summaryIspPackage" style="color: #34d399;">Dialog Zoom 724</strong>
+          </div>
+          <div class="summary-row total-row">
+            <span>Total Payable:</span>
+            <span class="plan-price-amount" id="summaryTotalAmount" style="font-size: 1.65rem; color: #00f5ff; text-shadow: 0 0 15px rgba(0,245,255,0.5);">Rs. 1,050</span>
+          </div>
+        </div>
+
+        <!-- Personal Info Form -->
+        <div class="form-group">
+          <label class="form-label">
+            WhatsApp Number <span style="color: #ef4444; font-weight: 800;">*</span>
+            <span style="font-size: 0.75rem; color: var(--text-dim); margin-left: 0.35rem;">(10 Digits Required, e.g. 0769196703)</span>
+          </label>
+          <input type="tel" class="form-input" id="orderWhatsapp" placeholder="e.g. 0769196703" maxlength="12" required>
+          <div id="waErrorFeedback" style="display: none; color: #ef4444; font-size: 0.78rem; margin-top: 0.35rem; font-weight: 600;">
+            ⚠️ Please enter a valid 10-digit WhatsApp number (e.g. 0769196703)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Telegram Username (Optional)</label>
+          <input type="text" class="form-input" id="orderTelegram" placeholder="@your_username">
+        </div>
+
+        <!-- Payment Method Choice -->
+        <label class="form-label" style="margin-top: 1.5rem;">Choose Payment Method *</label>
+        <div class="payment-methods-grid">
+          <!-- Active Bank Deposit Method -->
+          <div class="payment-method-card active" data-method="bank">
+            <div class="method-status-pill pill-active">● Active Method</div>
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <h5>Bank Deposit / Transfer</h5>
+            <span style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Slip Verification</span>
+          </div>
+
+          <!-- LANKAQR (Updating) -->
+          <div class="payment-method-card method-disabled" data-method="lankaqr" title="Currently Updating">
+            <div class="method-status-pill pill-updating">Updating</div>
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+            <h5>LANKAQR / Genie</h5>
+            <span style="font-size: 0.72rem; color: var(--text-dim);">Coming Soon</span>
+          </div>
+
+          <!-- Binance Pay (Updating) -->
+          <div class="payment-method-card method-disabled" data-method="binance" title="Currently Updating">
+            <div class="method-status-pill pill-updating">Updating</div>
+            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <h5>Binance Pay ID</h5>
+            <span style="font-size: 0.72rem; color: var(--text-dim);">Coming Soon</span>
+          </div>
+        </div>
+
+        <!-- Payment Details Dynamic Box -->
+        <div class="payment-details-box" id="paymentDetailsDisplay">
+          <!-- Dynamic info depending on selected method -->
+        </div>
+
+        <!-- Receipt Upload Box -->
+        <label class="form-label">Upload Payment Slip / Screenshot *</label>
+        <div class="receipt-upload-box" id="receiptDropzone">
+          <input type="file" id="receiptFileInput" accept="image/*" style="display: none;">
+          <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin: 0 auto 0.6rem; color: var(--neon-cyan);"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <div style="font-weight: 700; font-size: 0.95rem; color: #fff;">Click or drag receipt here</div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">Supported: JPG, PNG, WEBP (Max 5MB)</div>
+          <img id="receiptPreview" class="upload-preview-img" style="display: none;" alt="Payment receipt preview">
+        </div>
+
+        <!-- Terms Agreement Row (Circle Tap) -->
+        <div class="terms-agreement-row" id="termsAgreementRow">
+          <div class="custom-checkbox">
+            <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span>I confirm my package selection and agree to VKEHI VPN service terms.</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem;">
+          <button class="btn btn-glass btn-sm" id="btnBackToStep2">← Back to ISP</button>
+          <button class="btn btn-neon-blue btn-lg" id="btnSubmitOrder" disabled>Submit Order &amp; Activate</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: ORDER SUCCESS SCREEN -->
+      <div id="checkoutStep4" hidden style="text-align: center; padding: 2rem 1rem;">
+        <div style="width: 4.5rem; height: 4.5rem; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.75rem; color: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2 style="font-family: var(--font-display); font-size: 2.25rem; color: #fff; margin-bottom: 0.6rem;">
+          Order Placed Successfully!
+        </h2>
+        <p style="color: var(--text-muted); font-size: 1rem; max-width: 520px; margin: 0 auto 1.75rem;">
+          Your subscription order is now being reviewed by our automated delivery bot. Your V2Ray configuration will be ready shortly.
+        </p>
+
+        <div class="config-card" style="text-align: left; max-width: 520px; margin: 0 auto 2.25rem;">
+          <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em;">Order Reference</div>
+          <div class="font-mono" id="orderRefNumber" style="font-size: 1.35rem; font-weight: 800; color: #00f5ff; margin-top: 0.25rem; text-shadow: 0 0 10px rgba(0, 245, 255, 0.4);">VK-8921-X9</div>
+          <div style="display: flex; justify-content: space-between; margin-top: 1.25rem; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.85rem;">
+            <span>Status:</span>
+            <span style="color: #f59e0b; font-weight: 700;">⏳ Verification Pending (10-30m)</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-neon-blue" id="btnNotifyWhatsapp">
+            Chat on WhatsApp
+          </button>
+          <button class="btn btn-glass" id="btnCloseSuccessModal">
+            Go to Customer Dashboard
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Customer Portal / Dashboard Modal
+       ========================================================================== -->
+  <!-- ==========================================================================
+       Customer Portal / Dashboard Modal (Comprehensive User Dashboard)
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="dashboardModal" hidden>
+    <div class="checkout-card-container dashboard-modal-container" style="max-width: 820px;">
+      <button class="modal-close-btn" id="btnCloseDashboard">&times;</button>
+
+      <!-- Comprehensive User Profile & Verification Card -->
+      <div class="dash-user-profile-card">
+        <div class="dash-user-profile-left">
+          <div class="dash-avatar-wrapper">
+            <div id="dashUserAvatarInitial" class="dash-avatar-circle">V</div>
+            <img id="dashUserAvatarImg" class="dash-avatar-img" src="" alt="User Avatar" style="display: none;">
+            <div class="dash-status-dot-active" title="Online &amp; Connected"></div>
+          </div>
+          <div class="dash-user-details">
+            <div class="dash-user-header-row">
+              <h3 id="dashUserNameDisplay" class="dash-user-name">VKEHI Customer</h3>
+              <span id="dashAuthMethodBadge" class="badge-google-verified">
+                <svg width="13" height="13" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                <span id="dashAuthMethodLabel">Google Verified</span>
+              </span>
+            </div>
+            <div class="dash-email-row">
+              <span id="userEmailDisplay" class="dash-user-email">customer@gmail.com</span>
+              <button id="btnCopyUserEmail" class="btn-copy-inline" title="Copy Email">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              </button>
+            </div>
+            <div class="dash-meta-pills">
+              <span class="dash-meta-pill">ID: <strong id="dashCustomerIdDisplay" class="font-mono" style="color: #00f5ff;">VK-USR-8901</strong></span>
+              <span class="dash-meta-pill">Status: <strong id="dashCustomerStatusDisplay" style="color: #34d399;">Active Customer</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-user-profile-actions">
+          <button id="btnRefreshDashboard" class="btn btn-glass btn-sm" title="Refresh Live Data">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Sync</span>
+          </button>
+          <button id="btnDashboardSignOut" class="btn btn-glass btn-sm" style="color: #f87171; border-color: rgba(248,113,113,0.35);">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Near-Expiry Alert Banner (Visible when subscription expires in <= 3 days or expired) -->
+      <div id="dashExpiryWarningBanner" class="expiry-alert-banner warning" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <span style="font-size: 1.6rem; animation: pulseBank 1.5s infinite;">⚠️</span>
+          <div>
+            <strong id="dashExpiryWarningTitle" style="color: #fff; font-size: 0.95rem; display: block;">Subscription Expiring Soon!</strong>
+            <span id="dashExpiryWarningDesc" style="color: var(--text-muted); font-size: 0.82rem;">
+              Your V2Ray tunnel will expire in <span id="dashExpiryDaysBadge" style="color: #f59e0b; font-weight: 800;">3 days</span>. Renew now to maintain uninterrupted access.
+            </span>
+          </div>
+        </div>
+        <button class="btn btn-neon-blue btn-sm" id="btnDashRenewNow" style="padding: 0.45rem 1rem;">
+          🔄 Renew Package
+        </button>
+      </div>
+
+      <!-- Support / Admin Direct Announcements Box -->
+      <div id="dashAdminMessagesSection" style="margin-bottom: 1.25rem; display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+          <h4 style="font-size: 0.92rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 0.45rem;">
+            <span>💬 Messages from VKEHI Support</span>
+            <span class="badge-micro" id="dashAdminMsgBadge" style="background: rgba(0,245,255,0.2); color: #00f5ff;">New</span>
+          </h4>
+        </div>
+        <div id="dashAdminMessagesContainer"></div>
+      </div>
+
+      <!-- STATE A: PENDING VERIFICATION STATE (Bank Slip Under Review) -->
+      <div id="dashStatePending" class="dash-state-card" style="display: none;">
+        <div class="dash-pending-box">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.95rem; border-radius: var(--radius-full); background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 0.8rem; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.35);">
+              <span class="pulse-dot-amber"></span> Payment Verification Pending
+            </div>
+            <span class="font-mono" id="dashPendingRef" style="font-size: 0.9rem; color: #00f5ff; font-weight: 800;">VK-8921-LK</span>
+          </div>
+
+          <h3 id="dashPendingPlanTitle" style="font-family: var(--font-display); font-size: 1.35rem; color: #fff; margin-bottom: 0.5rem;">
+            🇸🇬 Singapore Standard 200GB (Dialog Zoom 724)
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">
+            Your bank transfer slip has been uploaded and queued for admin verification. Once verified, your high-speed V2Ray configuration and QR code will automatically activate right here!
+          </p>
+
+          <div style="display: flex; gap: 1rem; align-items: center; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 0.85rem 1.15rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 150px;">
+              <div style="font-size: 0.725rem; color: var(--text-dim); text-transform: uppercase;">Amount Deposited</div>
+              <div style="font-weight: 800; font-size: 1.15rem; color: #00f5ff;" id="dashPendingAmount">Rs. 1,050</div>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+              <div style="font-size: 0.725rem; color: var(--text-dim); text-transform: uppercase;">Estimated Time</div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: #34d399;">10 - 30 Minutes</div>
+            </div>
+            <div>
+              <button class="btn btn-glass btn-sm" id="btnViewUploadedSlip" style="padding: 0.4rem 0.85rem; font-size: 0.78rem;">
+                🔍 View My Slip
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE B: ACTIVE SUBSCRIPTION STATE (Hidden until verified active order is found) -->
+      <div id="dashStateActive" class="dash-state-card" style="display: none;">
+        <div class="config-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.85rem;">
+            <div>
+              <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: var(--radius-full); background: rgba(16, 185, 129, 0.15); color: #10b981; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">
+                <div class="status-dot-green"></div> Active Connection
+              </div>
+              <h3 id="dashActivePlanTitle" style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: #fff; margin-top: 0.65rem;">
+                🇸🇬 Singapore Standard 200GB (Dialog Zoom 724)
+              </h3>
+            </div>
+            <div style="text-align: right;">
+              <span id="dashActiveExpiry" style="font-family: var(--font-mono); font-size: 0.8125rem; color: #00f5ff; font-weight: 700; display: block;">
+                Expires in 30 Days
+              </span>
+              <span id="dashActiveExpiryDate" style="font-size: 0.75rem; color: var(--text-dim);">Renews: 2026-11-15</span>
+            </div>
+          </div>
+
+          <!-- Data Usage Meter -->
+          <div style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; color: var(--text-dim); margin-bottom: 0.5rem;">
+              <span>Data Consumption (3x-UI Telemetry)</span>
+              <span style="color: #fff; font-weight: 700;" id="dashActiveUsageText">4.2 GB / 200 GB</span>
+            </div>
+            <div class="cluster-progress-bar" style="height: 10px;">
+              <div class="cluster-progress-fill" id="dashActiveUsageBar" style="width: 2.1%;"></div>
+            </div>
+          </div>
+
+          <!-- V2Ray Config String Box -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="font-size: 0.8125rem; font-weight: 700; color: rgba(255,255,255,0.9);">
+              V2Ray / Xray Config URI:
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-glass btn-sm" id="btnDownloadConfig" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                ⬇ Download .txt
+              </button>
+              <button class="btn btn-glass btn-sm" id="btnOpenQrModal" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                📱 QR Code
+              </button>
+            </div>
+          </div>
+
+          <div class="config-code-box">
+            <span id="configUriText">vless://vkehi-client-user@sg1.vkehivpn.lk:443?encryption=none&security=reality&sni=partner.zoom.us&fp=chrome&pbk=vkehi_pubkey_981240&type=tcp#VKEHI-SG-Dialog-Zoom</span>
+            <button class="btn btn-neon-blue btn-sm" id="btnCopyConfig" style="padding: 0.5rem 1rem; font-size: 0.8rem; shrink-0;">
+              Copy Config
+            </button>
+          </div>
+
+          <!-- Optional Subscription Link Section (Displayed if Admin delivered a sub link) -->
+          <div id="dashSubLinkSection" style="display: none; margin-top: 1.15rem; padding: 1rem; background: rgba(0, 245, 255, 0.05); border: 1px dashed rgba(0, 245, 255, 0.35); border-radius: var(--radius-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <span style="font-size: 0.8125rem; font-weight: 700; color: #00f5ff; display: flex; align-items: center; gap: 0.35rem;">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                🌐 Auto-Updating Subscription Link:
+              </span>
+              <span class="badge-micro" style="background: rgba(16,185,129,0.2); color: #10b981;">Auto-Sync Enabled</span>
+            </div>
+            <div class="config-code-box" style="margin-bottom: 0.45rem;">
+              <span id="dashSubLinkText" class="font-mono" style="font-size: 0.78rem; word-break: break-all; color: #a5f3fc;"></span>
+              <button class="btn btn-neon-blue btn-sm" id="btnCopySubLink" style="padding: 0.45rem 0.9rem; font-size: 0.78rem; shrink-0;">
+                Copy Sub Link
+              </button>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.4;">
+              💡 <strong>Tip:</strong> Paste this URL into your VPN app (V2Box, NetMod, or v2rayNG) subscription settings to automatically receive node updates and IP changes.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE C: NO SUBSCRIPTION (EMPTY) -->
+      <div id="dashStateNone" class="dash-state-card" style="display: none; text-align: center; padding: 2.5rem 1.5rem; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); border-radius: var(--radius-xl); margin-bottom: 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🛡️</div>
+        <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: #fff; margin-bottom: 0.4rem;">No Active Subscription</h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem; max-width: 440px; margin: 0 auto 1.5rem;">
+          You don't have an active VPN subscription yet. Select an ISP-optimized Sri Lankan bypass package to get started!
+        </p>
+        <button class="btn btn-primary" onclick="document.getElementById('dashboardModal').hidden=true; window.location.hash='#pricing';">
+          Browse Pricing Plans →
+        </button>
+      </div>
+
+      <!-- Recent Orders History List -->
+      <div style="margin-top: 2rem;">
+        <h4 style="font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+          <span>My Orders &amp; Slips</span>
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Live Order History</span>
+        </h4>
+        <div id="dashOrdersHistoryList" class="dash-orders-table">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Quick Action Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.75rem;">
+        <button class="btn btn-glass" onclick="document.getElementById('dashboardModal').hidden=true; document.getElementById('guideModal').hidden=false;">
+          📖 Setup Guide (NetMod / V2Box)
+        </button>
+        <button class="btn btn-primary" onclick="document.getElementById('dashboardModal').hidden=true; window.location.hash='#pricing';">
+          ⚡ Extend / Top-Up Subscription
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Interactive How To Use / Setup Guide Modal
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="guideModal" hidden>
+    <div class="checkout-card-container card-3d" style="max-width: 740px;">
+      <button class="modal-close-btn" id="btnCloseGuide">&times;</button>
+
+      <span class="section-eyebrow">STEP-BY-STEP TUTORIAL</span>
+      <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 1rem;">
+        How To Connect in 3 Simple Steps
+      </h2>
+
+      <div style="display: flex; flex-direction: column; gap: 1.35rem; margin-top: 1.75rem;">
+        <div style="display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.35rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 245, 255, 0.2); border-radius: var(--radius-lg);">
+          <div style="width: 2.25rem; height: 2.25rem; border-radius: 50%; background: linear-gradient(135deg, #00f5ff, #3b82f6); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; box-shadow: 0 0 15px rgba(0,245,255,0.5);">1</div>
+          <div>
+            <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.35rem;">Download Client App</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              For Android or Windows, download <strong>NetMod VPN</strong> or <strong>V2Box</strong>. For iOS, install <strong>V2Box</strong> or <strong>NPV Tunnel</strong> from the App Store.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.35rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 245, 255, 0.2); border-radius: var(--radius-lg);">
+          <div style="width: 2.25rem; height: 2.25rem; border-radius: 50%; background: linear-gradient(135deg, #00f5ff, #3b82f6); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; box-shadow: 0 0 15px rgba(0,245,255,0.5);">2</div>
+          <div>
+            <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.35rem;">Copy Your V2Ray Config</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              Copy the <code>vless://...</code> configuration link delivered to your VKEHI VPN dashboard or WhatsApp message.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.35rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 245, 255, 0.2); border-radius: var(--radius-lg);">
+          <div style="width: 2.25rem; height: 2.25rem; border-radius: 50%; background: linear-gradient(135deg, #00f5ff, #3b82f6); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; box-shadow: 0 0 15px rgba(0,245,255,0.5);">3</div>
+          <div>
+            <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.35rem;">Import &amp; Connect</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              Open NetMod or V2Box, tap the <strong>"+"</strong> button &gt; <strong>"Import from Clipboard"</strong>, select the imported VKEHI profile, and tap <strong>Connect</strong>!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 2.25rem;">
+        <button class="btn btn-primary" onclick="document.getElementById('guideModal').hidden=true;">
+          Understood! Let's Connect
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Authentication Modal (Sign In / Register)
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="authModal" hidden>
+    <div class="checkout-card-container card-3d" style="max-width: 480px; text-align: center;">
+      <button class="modal-close-btn" id="btnCloseAuth">&times;</button>
+
+      <div class="brand-icon-box" style="margin: 0 auto 1.5rem; width: 3.5rem; height: 3.5rem; border-radius: 50%; overflow: hidden; background: transparent; box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);">
+        <img src="logo.png" alt="VKEHI VIP Logo" class="modal-logo-img">
+      </div>
+
+      <span class="section-eyebrow">CUSTOMER ACCOUNT</span>
+      <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 0.5rem;">
+        Welcome to VKEHI VPN
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2.25rem;">
+        Sign in to view your subscriptions, copy configs, and track data usage.
+      </p>
+
+      <button class="btn btn-glass" id="btnGoogleSignIn" style="width: 100%; margin-bottom: 1.5rem; gap: 0.85rem; border-color: rgba(255,255,255,0.18);">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Continue with Google
+      </button>
+
+      <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem;">
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">or email</span>
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+      </div>
+
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="authEmailInput" placeholder="name@example.com">
+      </div>
+
+      <button class="btn btn-neon-blue" id="btnEmailSignIn" style="width: 100%;">
+        Sign In with Email
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Shopping Cart Modal
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="cartModal" hidden>
+    <div class="checkout-card-container card-3d" style="max-width: 520px;">
+      <button class="modal-close-btn" id="btnCloseCart">&times;</button>
+      <span class="section-eyebrow">YOUR SELECTION</span>
+      <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 1.25rem;">Shopping Cart</h2>
+      <div id="cartContentArea">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Private Admin Management Panel Modal
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="adminModal" hidden>
+    <div class="checkout-card-container admin-card-container" style="max-width: 1040px; width: 95%;">
+      <button class="modal-close-btn" id="btnCloseAdmin">&times;</button>
+
+      <!-- ADMIN VIEW 1: SECURE LOGIN -->
+      <div id="adminLoginView" style="max-width: 440px; margin: 1.5rem auto; text-align: center;">
+        <div style="width: 4rem; height: 4rem; border-radius: 50%; background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; color: #60a5fa; box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <span class="section-eyebrow" style="color: #60a5fa;">RESTRICTED AREA</span>
+        <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff; margin-bottom: 0.5rem;">VKEHI Staff Portal</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">
+          Enter administrative credentials to verify bank slips and deploy VPN configs.
+        </p>
+
+        <form id="adminLoginForm" onsubmit="event.preventDefault(); window.handleAdminLogin();">
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">Admin Username</label>
+            <input type="text" class="form-input" id="adminUsernameInput" placeholder="Enter administrative username" required autocomplete="username">
+          </div>
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">Secret Staff Key</label>
+            <input type="password" class="form-input" id="adminPasswordInput" placeholder="Enter secret password" required autocomplete="current-password">
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1.5rem; text-align: left; display: flex; align-items: center; gap: 0.45rem;">
+            <svg width="13" height="13" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span>Authorized VKEHI Staff Terminal &bull; Encrypted</span>
+          </div>
+          <button type="submit" class="btn btn-neon-blue" style="width: 100%;">
+            Authenticate &amp; Launch Console
+          </button>
+        </form>
+      </div>
+
+      <!-- ADMIN VIEW 2: OPERATIONS DASHBOARD -->
+      <div id="adminDashboardView" style="display: none;">
+        <div class="admin-dash-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
+              <span class="section-eyebrow" style="margin-bottom: 0; color: #60a5fa;">ADMINISTRATIVE CONSOLE</span>
+              <span class="badge-micro" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">3x-UI READY</span>
+            </div>
+            <h2 style="font-family: var(--font-display); font-size: 1.85rem; color: #fff;">VKEHI Network Control</h2>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Logged as <strong>Admin (VK)</strong></span>
+            <button class="btn btn-glass btn-sm" id="btnAdminLogout" style="color: #f87171; border-color: rgba(248, 113, 113, 0.3);">
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Live KPI Stats Grid -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">Total Users</div>
+            <div class="admin-stat-num" id="adminStatUsers">1</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">Total Orders</div>
+            <div class="admin-stat-num" id="adminStatOrders">1</div>
+          </div>
+          <div class="admin-stat-card card-glow-amber">
+            <div class="admin-stat-label">Pending Slips</div>
+            <div class="admin-stat-num" id="adminStatPending" style="color: #f59e0b;">0</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">Active Tunnels</div>
+            <div class="admin-stat-num" id="adminStatActive" style="color: #10b981;">1</div>
+          </div>
+        </div>
+
+        <!-- Admin Navigation Tabs -->
+        <div class="admin-tab-bar">
+          <button class="admin-tab-btn active" data-tab="orders">
+            📦 Customer Orders &amp; Slips
+            <span class="badge-count" id="adminPendingBadge" style="position: static; margin-left: 0.4rem; display: none;">0</span>
+          </button>
+          <button class="admin-tab-btn" data-tab="users">
+            👥 Registered Users
+          </button>
+          <button class="admin-tab-btn" data-tab="messages">
+            💬 Send Customer Message
+          </button>
+          <button class="admin-tab-btn" data-tab="panel">
+            ⚙️ 3x-UI Panel &amp; API Bridge
+          </button>
+        </div>
+
+        <!-- TAB 1: ORDERS & SLIPS -->
+        <div id="adminTabOrders" class="admin-tab-content">
+          <div class="admin-filter-row">
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-glass btn-sm admin-filter-btn active" data-filter="all">All Orders</button>
+              <button class="btn btn-glass btn-sm admin-filter-btn" data-filter="pending">Pending Slips</button>
+              <button class="btn btn-glass btn-sm admin-filter-btn" data-filter="approved">Approved</button>
+            </div>
+            <button class="btn btn-glass btn-sm" id="btnAdminRefreshOrders">🔄 Refresh Data</button>
+          </div>
+
+          <div id="adminOrdersContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- TAB 2: REGISTERED USERS -->
+        <div id="adminTabUsers" class="admin-tab-content" style="display: none;">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User / Email</th>
+                  <th>Join Date</th>
+                  <th>Total Orders</th>
+                  <th>Subscription Status</th>
+                  <th>Direct Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: DIRECT CUSTOMER MESSAGING -->
+        <div id="adminTabMessages" class="admin-tab-content" style="display: none;">
+          <div class="admin-msg-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h4 style="font-size: 1.15rem; color: #fff; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                <span>💬 Broadcast Direct Message to Customer</span>
+              </h4>
+              <span class="badge-micro" style="background: rgba(0, 245, 255, 0.2); color: #00f5ff;">Instant Sync</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Select a registered user to deliver custom support notes, usage alerts, config renewals, or announcements directly to their dashboard.
+            </p>
+
+            <form id="adminDirectMsgForm" onsubmit="event.preventDefault(); window.handleSendAdminDirectMessage();">
+              <div class="form-group">
+                <label class="form-label">Select Recipient Customer *</label>
+                <select class="form-input" id="adminMsgTargetUser" required style="background: #0b0e1a; color: #fff;">
+                  <option value="">-- Choose Customer --</option>
+                  <!-- Populated dynamically by script.js -->
+                </select>
+              </div>
+
+              <!-- Quick Template Chips -->
+              <div style="margin-bottom: 1rem;">
+                <label class="form-label" style="font-size: 0.78rem;">Quick Templates:</label>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.35rem;">
+                  <button type="button" class="btn btn-glass btn-sm" onclick="applyMsgTemplate('config_ready')" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;">
+                    ⚡ Config Ready &amp; Active
+                  </button>
+                  <button type="button" class="btn btn-glass btn-sm" onclick="applyMsgTemplate('expiry_warning')" style="font-size: 0.75rem; padding: 0.3rem 0.65rem; color: #f59e0b; border-color: rgba(245,158,11,0.3);">
+                    ⚠️ Expiry Approaching: Renew
+                  </button>
+                  <button type="button" class="btn btn-glass btn-sm" onclick="applyMsgTemplate('speed_upgrade')" style="font-size: 0.75rem; padding: 0.3rem 0.65rem; color: #10b981; border-color: rgba(16,185,129,0.3);">
+                    🚀 Low-Hop Server Upgrade
+                  </button>
+                  <button type="button" class="btn btn-glass btn-sm" onclick="applyMsgTemplate('maintenance')" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;">
+                    🔧 Routine Maintenance Notice
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Message Title *</label>
+                <input type="text" class="form-input" id="adminMsgTitleInput" placeholder="e.g. Your 3x-UI V2Ray Config is Updated" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Message Content / Instructions *</label>
+                <textarea class="form-input" id="adminMsgContentInput" rows="3" placeholder="Enter instructions, new config link, or support message for this customer..." required></textarea>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-glass btn-sm" onclick="document.getElementById('adminDirectMsgForm').reset();">
+                  Clear
+                </button>
+                <button type="submit" class="btn btn-neon-blue btn-sm" id="btnSubmitAdminMsg">
+                  🚀 Send Message to User Dashboard
+                </button>
+              </div>
+            </form>
+
+            <div style="margin-top: 1.75rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.25rem;">
+              <h5 style="color: #fff; font-size: 0.9rem; margin-bottom: 0.75rem;">Recent Messages Dispatched</h5>
+              <div id="adminSentMessagesHistory" style="max-height: 200px; overflow-y: auto;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: 3x-UI SERVER BRIDGE -->
+        <div id="adminTabPanel" class="admin-tab-content" style="display: none;">
+          <div class="config-card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h4 style="font-size: 1.15rem; color: #fff; font-weight: 800;">3x-UI Xray Master Node Control</h4>
+              <span class="badge-micro" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">● Online / Inbound Port 27614</span>
+            </div>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Your active 3x-UI control panel is ready. Create clients manually, monitor live real-time bandwidth usage, and paste configurations to deliver to users:
+            </p>
+            <div class="copy-row" style="margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <span style="word-break: break-all;">Endpoint: <strong>https://paidsv2ray.vkehi.store:27614/jvDDD4iJyK2ybbe8Wh/panel/</strong></span>
+              <a href="https://paidsv2ray.vkehi.store:27614/jvDDD4iJyK2ybbe8Wh/panel/" target="_blank" class="btn btn-neon-blue btn-sm" style="text-decoration: none; shrink-0;">
+                Open 3x-UI Panel ↗
+              </a>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+              <div style="background: rgba(0,0,0,0.4); padding: 0.85rem; border-radius: var(--radius-md); font-size: 0.8rem;">
+                <span style="color: var(--text-dim); display: block;">Panel Username:</span>
+                <strong style="color: #fff; font-family: var(--font-mono); font-size: 0.95rem;">vk</strong>
+              </div>
+              <div style="background: rgba(0,0,0,0.4); padding: 0.85rem; border-radius: var(--radius-md); font-size: 0.8rem;">
+                <span style="color: var(--text-dim); display: block;">Panel Password:</span>
+                <strong style="color: #00f5ff; font-family: var(--font-mono); font-size: 0.95rem;">vk</strong>
+              </div>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(0,245,255,0.05); border: 1px dashed rgba(0,245,255,0.25); border-radius: var(--radius-md); font-size: 0.8rem; color: var(--text-dim);">
+              💡 <strong>Admin Workflow:</strong> When an order arrives, open your 3x-UI Panel above, create the client under your inbound, copy the generated <code>vless://...</code> link, and click <strong>Approve &amp; Deliver</strong> in the Orders tab. You can set the exact data limit and expiry date for the user!
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Slip High-Resolution Zoom Modal
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="slipZoomModal" hidden style="z-index: 1200;">
+    <div class="checkout-card-container" style="max-width: 650px; text-align: center;">
+      <button class="modal-close-btn" id="btnCloseSlipZoom">&times;</button>
+      <span class="section-eyebrow">PAYMENT PROOF VERIFICATION</span>
+      <h3 style="font-family: var(--font-display); font-size: 1.45rem; color: #fff; margin-bottom: 1rem;">Bank Deposit Receipt</h3>
+      <div style="max-height: 70vh; overflow-y: auto; background: #000; border-radius: var(--radius-md); padding: 0.5rem; border: 1px solid rgba(255,255,255,0.1);">
+        <img id="slipZoomImg" src="" alt="Payment slip full preview" style="max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 0 auto;">
+      </div>
+      <div style="margin-top: 1.25rem;">
+        <button class="btn btn-glass" onclick="document.getElementById('slipZoomModal').hidden=true;">
+          Close Viewer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       QR Code Generator Modal for V2Box / NetMod
+       ========================================================================== -->
+  <div class="checkout-modal-backdrop" id="qrModal" hidden style="z-index: 1200;">
+    <div class="checkout-card-container" style="max-width: 460px; text-align: center;">
+      <button class="modal-close-btn" id="btnCloseQrModal">&times;</button>
+      <span class="section-eyebrow">MOBILE QUICK IMPORT</span>
+      <h3 style="font-family: var(--font-display); font-size: 1.45rem; color: #fff; margin-bottom: 0.5rem;">Scan with V2Box / NetMod</h3>
+      <p style="font-size: 0.825rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+        Open your VPN app on Android/iOS and scan this code to import your VKEHI VPN configuration instantly.
+      </p>
+      
+      <div style="background: #fff; padding: 1.25rem; border-radius: 18px; display: inline-block; margin: 0 auto 1.5rem; box-shadow: 0 0 35px rgba(0,245,255,0.4);">
+        <div id="qrCodeContainer">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center;">
+        <button class="btn btn-neon-blue btn-sm" id="btnCopyConfigFromQr">Copy Config String</button>
+        <button class="btn btn-glass btn-sm" onclick="document.getElementById('qrModal').hidden=true;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smooth Navigation & Back Redirecting Micro Indicator -->
+  <div class="nav-transition-overlay" id="navTransitionOverlay">
+    <div class="nav-transition-spinner"></div>
+    <div class="nav-transition-text" id="navTransitionText">REDIRECTING...</div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+</body>
+</html>
