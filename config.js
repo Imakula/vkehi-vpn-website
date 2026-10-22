@@ -14,10 +14,9 @@ window.VKEHI_CONFIG = {
   telegramChannel: "https://t.me/VK_EHI_CONTAC",
   telegramUsername: "@VK_EHI_CONTAC",
 
-  // 3x-UI Server Panel Configuration
-  panelUrl: "https://paidsv2ray.vkehi.store:27614/jvDDD4iJyK2ybbe8Wh/panel/",
-  panelUser: "vk",
-  panelPass: "vk",
+// 3x-UI Server Panel Configuration
+// Private panel credentials must NOT be stored in this public file.
+panelUrl: "",
 
   // Multi-Bank Payment Details for Sri Lanka
   banks: [
