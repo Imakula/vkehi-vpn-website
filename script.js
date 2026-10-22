@@ -2819,22 +2819,52 @@ window.handleAdminLogin = async function() {
     });
   }
 
-  window.promptUpdateUsage = function(orderId) {
-    const orders = getStoredOrders();
-    const ord = orders.find(o => o.id === orderId);
-    if (!ord) return;
 
-    const currentUsed = ord.usedGb || 0;
-    const newVal = prompt(`Enter data consumed in GB for Order ${orderId}:`, currentUsed);
-    if (newVal !== null && !isNaN(parseFloat(newVal))) {
-      ord.usedGb = parseFloat(newVal);
-      saveStoredOrders(orders);
-      pushOrderToCloud(ord);
-      showToast(`Usage updated to ${ord.usedGb} GB for Order ${orderId}`);
-      renderAdminOrders('all');
-      renderUserDashboard();
-    }
-  };
+window.promptUpdateUsage = async function(orderId) {
+  const orders = getStoredOrders();
+  const ord = orders.find(o => o.id === orderId);
+
+  if (!ord) {
+    alert("Order not found.");
+    return;
+  }
+
+  const currentUsed = ord.usedGb || 0;
+
+  const newVal = prompt(
+    `Enter data consumed in GB for Order ${orderId}:`,
+    currentUsed
+  );
+
+  if (newVal === null || newVal.trim() === "") return;
+
+  const usedGb = Number(newVal);
+
+  if (!Number.isFinite(usedGb) || usedGb < 0) {
+    alert("Please enter a valid usage value.");
+    return;
+  }
+
+  const previousUsed = ord.usedGb;
+  ord.usedGb = usedGb;
+
+  // Save to Supabase first
+  const saved = await pushOrderToCloud(ord);
+
+  if (!saved) {
+    ord.usedGb = previousUsed;
+    alert("Usage update failed. Please check the browser console.");
+    return;
+  }
+
+  // Update local data only after cloud save succeeds
+  saveStoredOrders(orders);
+
+  showToast(`Usage updated to ${usedGb} GB for Order ${orderId}`);
+  renderAdminOrders("all");
+  renderUserDashboard();
+};
+
 
   window.promptExtendExpiry = function(orderId) {
     const orders = getStoredOrders();
