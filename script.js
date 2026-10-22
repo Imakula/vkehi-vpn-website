@@ -1534,9 +1534,19 @@ function saveStoredOrders(orders) {
         userEmail: currentUser ? currentUser.email : (wa.replace(/[^0-9]/g, '') + '@customer.vkehivpn.store')
       };
 
-      const orders = getStoredOrders();
-      orders.unshift(newOrder);
-      saveStoredOrders(orders);
+
+    const orders = getStoredOrders();
+    orders.unshift(newOrder);
+
+    try {
+    saveStoredOrders(orders);
+   } catch (storageError) {
+   console.warn(
+    'Local storage is full; continuing with cloud order save.',
+    storageError
+   );
+ }
+
 
       // Update registered users list
       if (currentUser && currentUser.email) {
