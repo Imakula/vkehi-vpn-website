@@ -2637,8 +2637,7 @@ window.handleSendAdminDirectMessage = async function() {
 };
 
 
-    // Also add to global notifications
-    addNotification(`💬 Support Note: ${title}`, content);
+
 
    
 
