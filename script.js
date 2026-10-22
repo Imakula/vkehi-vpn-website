@@ -2587,36 +2587,55 @@ window.handleAdminLogin = async function() {
     }
   };
 
-  window.handleSendAdminDirectMessage = async function() {
-    const select = document.getElementById('adminMsgTargetUser');
-    const titleInput = document.getElementById('adminMsgTitleInput');
-    const contentInput = document.getElementById('adminMsgContentInput');
 
-    const recipient = select?.value;
-    const title = titleInput?.value.trim();
-    const content = contentInput?.value.trim();
+window.handleSendAdminDirectMessage = async function() {
+  const select = document.getElementById('adminMsgTargetUser');
+  const titleInput = document.getElementById('adminMsgTitleInput');
+  const contentInput = document.getElementById('adminMsgContentInput');
 
-    if (!recipient || !title || !content) {
-      showToast('Please select recipient, title, and message content.');
+  const recipient = select?.value?.trim().toLowerCase();
+  const title = titleInput?.value?.trim();
+  const content = contentInput?.value?.trim();
+
+  if (!recipient || !title || !content) {
+    showToast('Please select recipient, title, and message content.');
+    return;
+  }
+
+  if (!supabase) {
+    showToast('Supabase is not initialized.');
+    return;
+  }
+
+  try {
+    const { error } = await supabase
+      .from('messages')
+      .insert({
+        user_email: recipient,
+        title: title,
+        message: content
+      });
+
+    if (error) {
+      console.error('Supabase message error:', error);
+      showToast('Message failed: ' + error.message);
       return;
     }
 
-    const newMsg = {
-      id: 'MSG-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-      recipientEmail: recipient.toLowerCase(),
-      title: title,
-      body: content,
-      date: new Date().toISOString(),
-      unread: true
-    };
+    showToast('Message saved to database!');
 
-    let storedMsgs = [];
-    try {
-      const raw = localStorage.getItem('vkehi_admin_messages');
-      if (raw) storedMsgs = JSON.parse(raw);
-    } catch(e) {}
-    storedMsgs.unshift(newMsg);
-    localStorage.setItem('vkehi_admin_messages', JSON.stringify(storedMsgs));
+    titleInput.value = '';
+    contentInput.value = '';
+
+    renderAdminSentMessages();
+    renderUserDashboard();
+
+  } catch (error) {
+    console.error('Unexpected message error:', error);
+    showToast('Message failed. Check browser console.');
+  }
+};
+
 
     // Also add to global notifications
     addNotification(`💬 Support Note: ${title}`, content);
