@@ -46,7 +46,7 @@ window.VKEHI_CONFIG = {
       bankName: "PEOPLES BANK",
       accountNumber: "327200140031953",
       accountName: "K.A.V IMAKULA",
-      branch: "Kesbewa / Online",
+      branch: "Kesbewa",
       color: "#8b5cf6",
       badge: "All Branches",
       iconSvg: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h2"/></svg>'
