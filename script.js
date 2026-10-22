@@ -199,7 +199,8 @@ async function pushOrderToCloud(ord) {
     status: ord.status,
     config: ord.config || null,
     expiry_date: ord.expiryDate || null,
-    "created-at": ord.date
+    "created-at": ord.date,
+    used_gb: ord.usedGb ?? 0
   };
 
   try {
@@ -221,6 +222,7 @@ async function pushOrderToCloud(ord) {
     return false;
   }
 }
+
 
   async function syncUsersFromCloud() {
     if (!supabase) return;
