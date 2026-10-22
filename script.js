@@ -199,8 +199,8 @@ async function pushOrderToCloud(ord) {
     status: ord.status,
     config: ord.config || null,
     expiry_date: ord.expiryDate || null,
-    "created-at": ord.date,
-    used_gb: ord.usedGb ?? 0
+    created_at: ord.date,
+    //used_gb: ord.usedGb ?? 0
   };
 
   try {
