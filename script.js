@@ -2640,25 +2640,7 @@ window.handleSendAdminDirectMessage = async function() {
     // Also add to global notifications
     addNotification(`💬 Support Note: ${title}`, content);
 
-    // If Supabase is available, sync to cloud
-    if (supabase) {
-      try {
-        await supabase.from('messages').insert({
-          id: newMsg.id,
-          user_email: newMsg.recipientEmail,
-          title: newMsg.title,
-          message: newMsg.body,
-          created_at: newMsg.date
-        });
-      } catch(e) {}
-    }
-
-    showToast(`Message successfully sent to ${recipient}!`);
-    titleInput.value = '';
-    contentInput.value = '';
-    renderAdminSentMessages();
-    renderUserDashboard();
-  };
+   
 
   function renderAdminSentMessages() {
     const historyContainer = document.getElementById('adminSentMessagesHistory');
