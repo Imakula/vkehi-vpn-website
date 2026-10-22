@@ -1,0 +1,12 @@
+{
+  "name": "vkehi-vpn",
+  "version": "2.4.0",
+  "description": "VKEHI VPN Official Web Portal & 3x-UI Server Bridge",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
