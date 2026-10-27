@@ -85,65 +85,44 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch(e) {}
 
   async function syncOrdersFromCloud() {
-    if (!supabase) return;
+    if (!supabase) return false;
     try {
       const { data, error } = await supabase.from('orders').select('*');
-      if (!error && Array.isArray(data)) {
-        const local = getStoredOrders();
-        const map = new Map();
-        local.forEach(o => map.set(o.id, o));
-        
-        const currentUser = getCurrentUser();
-
-        data.forEach(r => {
-          const wasApproved = knownApprovedOrders.has(r.id);
-          const isNowApproved = (r.status === 'approved' && r.config);
-
-          if (!wasApproved && isNowApproved) {
-            knownApprovedOrders.add(r.id);
-            // Check if this belongs to currently logged in user
-            if (currentUser && r.user_email && r.user_email.toLowerCase() === currentUser.email.toLowerCase()) {
-              addNotification(
-                `🎉 Order ${r.id} Activated!`,
-                `Your ${r.isp || 'VPN'} configuration has been approved and activated by Admin.`
-              );
-              showToast(`🎉 Order ${r.id} Approved! Config is now unlocked in your dashboard.`);
-            }
+      if (error) throw error;
+      if (!Array.isArray(data)) return true;
+      const local = getStoredOrders();
+      const map = new Map(local.map(o => [o.id, o]));
+      const currentUser = getCurrentUser();
+      data.forEach(r => {
+        const ref = r.order_ref || r.id;
+        const wasApproved = knownApprovedOrders.has(ref);
+        const isNowApproved = r.status === 'approved' && r.config;
+        if (!wasApproved && isNowApproved) {
+          knownApprovedOrders.add(ref);
+          if (currentUser && r.user_email && r.user_email.toLowerCase() === currentUser.email.toLowerCase()) {
+            addNotification(`🎉 Order ${ref} Activated!`, `Your ${r.isp || 'VPN'} configuration has been approved and activated by Admin.`);
+            showToast(`🎉 Order ${ref} Approved! Config is now unlocked in your dashboard.`);
           }
-
-          map.set(r.id, {
-            id: r.id,
-            date: r.created_at || r.date || new Date().toISOString(),
-            planId: r.plan_id || 'standard',
-            planName: r.plan_name,
-            duration: Number(r.duration || 30),
-            location: r.location || 'SG',
-            isp: r.isp,
-            amount: Number(r.amount),
-            whatsapp: r.whatsapp,
-            telegram: r.telegram || '',
-            paymentMethod: r.payment_method || 'Bank Deposit',
-            slipUrl: r.slip_url,
-            status: r.status || 'pending',
-            config: r.config || null,
-            subLink: r.sub_link || r.subLink || null,
-            expiryDate: r.expiry_date || null,
-            userEmail: r.user_email
-          });
-        });
-
-        const merged = Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date));
-        localStorage.setItem('vkehi_orders', JSON.stringify(merged));
-        renderAdminStats();
-        const adminOrdersCont = document.getElementById('adminOrdersContainer');
-        const isEditingInAdmin = adminOrdersCont && document.activeElement && adminOrdersCont.contains(document.activeElement);
-        if (!isEditingInAdmin) {
-          renderAdminOrders('all');
         }
-        renderUserDashboard();
-      }
+        map.set(ref, {
+          id: ref, date: r.created_at || new Date().toISOString(), planId: r.plan_id || 'standard',
+          planName: r.plan_name || 'VPN Plan', duration: Number(r.duration || 30), location: r.location || 'SG',
+          isp: r.isp || '', amount: Number(r.amount || 0), whatsapp: r.whatsapp || '', telegram: r.telegram || '',
+          paymentMethod: r.payment_method || 'Bank Deposit', slipUrl: r.slip_url || '', status: r.status || 'pending',
+          config: r.config || null, subLink: r.sub_link || null, expiryDate: r.expiry_date || null,
+          userEmail: r.user_email || '', usedGb: Number(r.used_gb || 0), totalGb: r.total_gb === null ? 0 : Number(r.total_gb || 0)
+        });
+      });
+      localStorage.setItem('vkehi_orders', JSON.stringify(Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date))));
+      renderAdminStats();
+      const container = document.getElementById('adminOrdersContainer');
+      const editing = container && document.activeElement && container.contains(document.activeElement);
+      if (!editing) renderAdminOrders('all');
+      renderUserDashboard();
+      return true;
     } catch (e) {
-      // Graceful offline fallback
+      console.error('VKEHI orders sync failed:', e.message || e);
+      return false;
     }
   }
 
@@ -178,65 +157,73 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function pushOrderToCloud(ord) {
-    if (!supabase || !ord) return;
+    if (!supabase || !ord) return false;
     try {
-      await supabase.from('orders').upsert({
-        id: ord.id,
-        user_email: ord.userEmail,
-        plan_id: ord.planId,
-        plan_name: ord.planName,
-        duration: ord.duration,
-        location: ord.location,
-        isp: ord.isp,
-        amount: ord.amount,
-        whatsapp: ord.whatsapp,
-        telegram: ord.telegram,
-        payment_method: ord.paymentMethod,
-        slip_url: ord.slipUrl,
-        status: ord.status,
-        config: ord.config,
-        sub_link: ord.subLink || null,
-        expiry_date: ord.expiryDate,
-        created_at: ord.date
-      });
-    } catch (e) {}
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session?.user?.id) {
+        console.warn('VKEHI: Sign in is required before syncing an order.');
+        return false;
+      }
+      const row = {
+        order_ref: String(ord.id), user_id: session.user.id, user_email: session.user.email || ord.userEmail,
+        plan_id: ord.planId || 'standard', plan_name: ord.planName || 'VPN Plan', duration: Number(ord.duration || 30),
+        location: ord.location || 'SG', isp: ord.isp || '', amount: Number(ord.amount || 0), whatsapp: ord.whatsapp || '',
+        telegram: ord.telegram || '', payment_method: ord.paymentMethod || 'Bank Deposit', slip_url: ord.slipUrl || null,
+        status: ord.status || 'pending', config: ord.config || null, sub_link: ord.subLink || null,
+        expiry_date: ord.expiryDate || null, created_at: ord.date || new Date().toISOString(),
+        used_gb: Number(ord.usedGb || 0), total_gb: ord.totalGb === undefined ? null : Number(ord.totalGb)
+      };
+      const { error } = await supabase.from('orders').upsert(row, { onConflict: 'order_ref' });
+      if (error) throw error;
+      return true;
+    } catch (e) {
+      console.error('VKEHI order cloud save failed:', e.message || e);
+      return false;
+    }
   }
 
   async function syncUsersFromCloud() {
-    if (!supabase) return;
+    if (!supabase) return false;
     try {
-      const { data, error } = await supabase.from('users').select('*');
-      if (!error && Array.isArray(data) && data.length > 0) {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session?.user) return false;
+      const { data, error } = await supabase.from('profiles').select('id,email,full_name,created_at');
+      if (error) throw error;
+      if (Array.isArray(data)) {
         const local = getStoredUsers();
-        const map = new Map();
-        local.forEach(u => map.set(u.email.toLowerCase(), u));
+        const map = new Map(local.map(u => [String(u.email || '').toLowerCase(), u]));
         data.forEach(r => {
-          map.set(r.email.toLowerCase(), {
-            email: r.email,
-            name: r.name || r.email.split('@')[0],
-            joinDate: r.join_date,
-            totalOrders: r.total_orders || 0,
-            status: r.status || 'Registered Customer'
-          });
+          if (!r.email) return;
+          const old = map.get(r.email.toLowerCase()) || {};
+          map.set(r.email.toLowerCase(), { ...old, email: r.email, name: r.full_name || r.email.split('@')[0], joinDate: (r.created_at || '').slice(0,10), totalOrders: old.totalOrders || 0, status: old.status || 'Registered Customer' });
         });
         saveStoredUsers(Array.from(map.values()));
         renderAdminUsers();
       }
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      console.error('VKEHI profiles sync failed:', e.message || e);
+      return false;
+    }
   }
 
   async function pushUserToCloud(user) {
-    if (!supabase || !user || !user.email) return;
+    if (!supabase || !user?.email) return false;
     try {
-      await supabase.from('users').upsert({
-        email: user.email,
-        name: user.name || user.email.split('@')[0],
-        join_date: user.joinDate || new Date().toISOString().split('T')[0],
-        total_orders: user.totalOrders || 0,
-        status: user.status || 'Active Customer',
-        updated_at: new Date().toISOString()
-      });
-    } catch (e) {}
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session?.user || session.user.email?.toLowerCase() !== user.email.toLowerCase()) return false;
+      const { error } = await supabase.from('profiles').upsert({
+        id: session.user.id, email: session.user.email, full_name: user.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+      }, { onConflict: 'id' });
+      if (error) throw error;
+      return true;
+    } catch (e) {
+      console.error('VKEHI profile cloud save failed:', e.message || e);
+      return false;
+    }
   }
 
   // Live real-time continuous background cloud synchronization (every 3 seconds)
@@ -1471,7 +1458,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7.3 Submit Order & Queue for Bank Slip Review
   // ==========================================================================
   if (btnSubmitOrder) {
-    btnSubmitOrder.addEventListener('click', () => {
+    btnSubmitOrder.addEventListener('click', async () => {
+      if (supabase) {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error || !session?.user) {
+          showToast('Please sign in with Google before placing an order so it can be securely saved to your account.');
+          return;
+        }
+      }
       const wa = orderWhatsappInput ? orderWhatsappInput.value.trim() : '';
       if (!isValid10DigitPhone(wa)) {
         if (orderWhatsappInput) {
@@ -1540,7 +1534,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Sync to cloud database
-      pushOrderToCloud(newOrder);
+      const cloudSaved = await pushOrderToCloud(newOrder);
+      if (!cloudSaved && supabase) showToast('Order is saved on this device, but cloud sync failed. Please contact support before paying again.');
 
       // Notification
       addNotification(`Order ${orderRef} Placed`, `Bank transfer slip received. Verification is in progress.`);
@@ -2370,10 +2365,12 @@ window.handleAdminLogin = async function() {
     if (userError) throw userError;
 
     const email = user?.email?.toLowerCase().trim();
-    if (email !== ADMIN_EMAIL) {
+    const { data: adminRow, error: adminError } = await supabase
+      .from('admin_users').select('user_id,email').eq('user_id', user.id).maybeSingle();
+    if (adminError || !adminRow || email !== ADMIN_EMAIL) {
       setAdminLoggedIn(false);
       showAdminLogin();
-      showToast('Access denied. Only the authorized Google account can access Admin.');
+      showToast('Access denied. This Google account is not registered as an administrator.');
       return;
     }
 
