@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         telegram: ord.telegram || '', payment_method: ord.paymentMethod || 'Bank Deposit', slip_url: ord.slipUrl || null,
         status: ord.status || 'pending', config: ord.config || null, sub_link: ord.subLink || null,
         expiry_date: ord.expiryDate || null, created_at: ord.date || new Date().toISOString(),
-        used_gb: Number(ord.usedGb || 0), total_gb: ord.totalGb === undefined ? null : Number(ord.totalGb)
+        
       };
       const { error } = await supabase.from('orders').upsert(row, { onConflict: 'order_ref' });
       if (error) throw error;
