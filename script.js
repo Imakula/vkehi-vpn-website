@@ -78,6 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const knownApprovedOrders = new Set();
+  // Keep full cloud order records (including receipt previews) in memory so local
+  // storage compaction never prevents the admin from reviewing a synced receipt.
+  const cloudOrdersCache = new Map();
   try {
     getStoredOrders().forEach(o => {
       if (o.status === 'approved') knownApprovedOrders.add(o.id);
@@ -104,16 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(`🎉 Order ${ref} Approved! Config is now unlocked in your dashboard.`);
           }
         }
-        map.set(ref, {
+        const cloudOrder = {
           id: ref, date: r.created_at || new Date().toISOString(), planId: r.plan_id || 'standard',
           planName: r.plan_name || 'VPN Plan', duration: Number(r.duration || 30), location: r.location || 'SG',
           isp: r.isp || '', amount: Number(r.amount || 0), whatsapp: r.whatsapp || '', telegram: r.telegram || '',
           paymentMethod: r.payment_method || 'Bank Deposit', slipUrl: r.slip_url || '', status: r.status || 'pending',
           config: r.config || null, subLink: r.sub_link || null, expiryDate: r.expiry_date || null,
           userEmail: r.user_email || '', usedGb: Number(r.used_gb || 0), totalGb: r.total_gb === null ? 0 : Number(r.total_gb || 0)
-        });
+        };
+        map.set(ref, cloudOrder);
+        cloudOrdersCache.set(ref, cloudOrder);
       });
-      localStorage.setItem('vkehi_orders', JSON.stringify(Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date))));
+      persistStoredOrdersSafely(Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date)));
       renderAdminStats();
       const container = document.getElementById('adminOrdersContainer');
       const editing = container && document.activeElement && container.contains(document.activeElement);
@@ -1137,8 +1142,58 @@ document.addEventListener('DOMContentLoaded', () => {
     return [];
   }
 
+  // Keep order metadata in localStorage without letting receipt images exhaust
+  // the browser's small storage quota. Full receipt data is sent to Supabase.
+  function persistStoredOrdersSafely(orders) {
+    const sorted = (Array.isArray(orders) ? orders : [])
+      .filter(o => o && o.id)
+      .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+    const write = list => localStorage.setItem('vkehi_orders', JSON.stringify(list));
+    try {
+      write(sorted);
+      return true;
+    } catch (err) {
+      if (err?.name !== 'QuotaExceededError' && err?.name !== 'NS_ERROR_DOM_QUOTA_REACHED') {
+        console.error('VKEHI: Unable to save orders locally:', err);
+        return false;
+      }
+    }
+
+    // Retry by removing large base64 slips from older orders first.
+    // Keep the newest two slips locally; order details are retained for all orders.
+    const compact = sorted.map((order, index) => {
+      const copy = { ...order };
+      if (typeof copy.slipUrl === 'string' && copy.slipUrl.startsWith('data:') && index >= 2) {
+        copy.slipUrl = '';
+      }
+      return copy;
+    });
+    try {
+      write(compact);
+      console.warn('VKEHI: Local storage was full; older receipt previews were omitted from this device. Cloud order data was not changed.');
+      return true;
+    } catch (err) {
+      // Final fallback: preserve order metadata and the newest receipt only.
+      const minimal = compact.slice(0, 100).map((order, index) => ({
+        ...order,
+        slipUrl: index === 0 && typeof order.slipUrl === 'string' && order.slipUrl.startsWith('data:')
+          ? order.slipUrl
+          : (order.slipUrl && !order.slipUrl.startsWith('data:') ? order.slipUrl : '')
+      }));
+      try {
+        write(minimal);
+        console.warn('VKEHI: Local storage is nearly full; older local order history was trimmed. Check Supabase for the complete order history.');
+        return true;
+      } catch (finalErr) {
+        console.error('VKEHI: Could not save orders to local storage. Cloud sync should be used:', finalErr);
+        return false;
+      }
+    }
+  }
+
   function saveStoredOrders(orders) {
-    localStorage.setItem('vkehi_orders', JSON.stringify(orders));
+    return persistStoredOrdersSafely(orders);
   }
 
   function getCurrentUser() {
@@ -1390,12 +1445,46 @@ document.addEventListener('DOMContentLoaded', () => {
         currentOrderState.receiptFile = file;
         const reader = new FileReader();
         reader.onload = (event) => {
-          currentOrderState.receiptDataUrl = event.target.result;
-          receiptPreview.src = event.target.result;
-          receiptPreview.style.display = 'block';
-          showToast('Payment slip attached successfully!');
-          validateStep3();
+          const originalDataUrl = event.target.result;
+          const image = new Image();
+          image.onload = () => {
+            try {
+              // Resize/compress receipt images to reduce localStorage and database payload size.
+              const maxSide = 1200;
+              const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+              canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+              const ctx = canvas.getContext('2d');
+              if (!ctx) throw new Error('Image compression is not supported in this browser.');
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+              const compressed = canvas.toDataURL('image/jpeg', 0.68);
+              currentOrderState.receiptDataUrl = compressed.length < originalDataUrl.length ? compressed : originalDataUrl;
+              receiptPreview.src = currentOrderState.receiptDataUrl;
+              receiptPreview.style.display = 'block';
+              showToast('Payment slip attached successfully!');
+              validateStep3();
+            } catch (compressionError) {
+              // Keep the original upload if the browser cannot compress it.
+              currentOrderState.receiptDataUrl = originalDataUrl;
+              receiptPreview.src = originalDataUrl;
+              receiptPreview.style.display = 'block';
+              showToast('Payment slip attached. Storage optimization was unavailable.');
+              validateStep3();
+            }
+          };
+          image.onerror = () => {
+            currentOrderState.receiptDataUrl = originalDataUrl;
+            receiptPreview.src = originalDataUrl;
+            receiptPreview.style.display = 'block';
+            showToast('Payment slip attached successfully!');
+            validateStep3();
+          };
+          image.src = originalDataUrl;
         };
+        reader.onerror = () => showToast('Could not read the payment slip. Please choose the image again.');
         reader.readAsDataURL(file);
       }
     });
@@ -2643,7 +2732,10 @@ window.handleSendAdminDirectMessage = async function() {
     const container = document.getElementById('adminOrdersContainer');
     if (!container) return;
 
-    let orders = getStoredOrders();
+    const mergedOrders = new Map(getStoredOrders().map(order => [order.id, order]));
+    // Cloud data is authoritative and keeps receipt previews available in memory.
+    cloudOrdersCache.forEach((order, id) => mergedOrders.set(id, order));
+    let orders = Array.from(mergedOrders.values()).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
     if (filter === 'pending') orders = orders.filter(o => o.status === 'pending');
     if (filter === 'approved') orders = orders.filter(o => o.status === 'approved');
 
