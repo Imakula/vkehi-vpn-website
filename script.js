@@ -1534,8 +1534,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Sync to cloud database
-      const cloudSaved = await pushOrderToCloud(newOrder);
-      if (!cloudSaved && supabase) showToast('Order is saved on this device, but cloud sync failed. Please contact support before paying again.');
+     const cloudSaved = await pushOrderToCloud(newOrder);
+
+     if (!cloudSaved) {
+     console.error('Order was not saved to Supabase:', newOrder);
+     showToast('Cloud save failed. Please check the database error.');
+     } else {
+     console.log('Order successfully saved to Supabase:', newOrder.id);
+     }
 
       // Notification
       addNotification(`Order ${orderRef} Placed`, `Bank transfer slip received. Verification is in progress.`);
