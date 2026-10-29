@@ -1963,6 +1963,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 <strong style="color: #00f5ff; font-family: var(--font-mono);">${ord.id}</strong>
                 <span style="color: var(--text-dim); font-size: 0.75rem; margin-left: 0.5rem;">${new Date(ord.date).toLocaleDateString()}</span>
                 <div style="font-size: 0.8125rem; color: #fff; margin-top: 0.2rem;">${ord.planName} &bull; ${ord.isp}</div>
+                
+${ord.status === 'approved' && (ord.config || ord.subLink) ? `
+  <div style="margin-top: 0.6rem; padding: 0.7rem; background: rgba(0,245,255,0.06); border: 1px solid rgba(0,245,255,0.2); border-radius: 8px;">
+    ${ord.config ? `
+      <div style="color: #00f5ff; font-size: 0.8rem; font-weight: 700;">VPN Configuration</div>
+      <textarea readonly style="width:100%; min-height:70px; margin-top:5px; padding:8px; color:#fff; background:rgba(0,0,0,0.25); border-radius:6px; overflow-wrap:anywhere;">${ord.config}</textarea>
+      <button class="btn btn-glass btn-sm" onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(() => showToast('VPN config copied!'))">Copy Config</button>
+    ` : ''}
+    ${ord.subLink ? `
+      <div style="margin-top:8px; color:#00f5ff; font-size:0.8rem; font-weight:700;">Subscription Link</div>
+      <input readonly value="${ord.subLink}" style="width:100%; margin-top:5px; padding:8px; color:#fff; background:rgba(0,0,0,0.25); border-radius:6px;">
+      <button class="btn btn-glass btn-sm" onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(() => showToast('Subscription link copied!'))">Copy Link</button>
+    ` : ''}
+  </div>
+` : ''}
+
               </div>
               <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
                 <strong style="color: #fff;">Rs. ${ord.amount.toLocaleString()}</strong>
