@@ -4972,10 +4972,39 @@ window.handleSendAdminDirectMessage = async function() {
     const modal = document.getElementById('accountBannedModal');
     const elEmail = document.getElementById('accountBannedModalEmail');
     const elReason = document.getElementById('accountBannedModalReason');
-    if (elEmail) elEmail.textContent = email;
+    if (elEmail) elEmail.textContent = email || 'This account';
     if (elReason) elReason.textContent = 'Your account has been suspended by the administrator. Please contact the VKEHI Admin through the official support channels on our website for assistance.';
     if (modal) modal.hidden = false;
     showToast('Account suspended. Please contact the VKEHI Admin.', 'error');
+  }
+
+  // Supabase may reject a suspended user's OAuth callback before a session is
+  // created. In that case there is no authenticated user object to inspect,
+  // so detect the ban-related callback error and show the same suspension notice.
+  function showSuspendedOAuthCallbackNotice() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const callbackError = [
+        params.get('error'),
+        params.get('error_code'),
+        params.get('error_description')
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      if (!/(banned|suspended|user_disabled|user_banned)/i.test(callbackError)) return;
+
+      sessionStorage.removeItem('vkehi_explicit_oauth_login');
+      sessionStorage.removeItem('vkehi_explicit_admin_login');
+      showCustomerBannedNotice('', 'Account suspended');
+
+      // Remove auth error details from the visible URL after handling them.
+      window.history.replaceState(
+        window.history.state,
+        document.title,
+        window.location.pathname + window.location.hash
+      );
+    } catch (e) {
+      console.warn('Could not process suspended OAuth callback:', e);
+    }
   }
 
   async function finishGoogleSignIn(authUser, isSilentRestore = false) {
@@ -5031,6 +5060,8 @@ window.handleSendAdminDirectMessage = async function() {
       }
     }
   }
+
+  showSuspendedOAuthCallbackNotice();
 
   if (supabase) {
     supabase.auth.onAuthStateChange((event, session) => {
