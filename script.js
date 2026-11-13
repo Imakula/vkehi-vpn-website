@@ -386,6 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
       const currentUser = getCurrentUser();
       if (currentUser && currentUser.email) {
+        if (currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          enforceBanOnActiveSession();
+        }
         syncOrdersFromCloud();
         syncMessagesFromCloud();
         if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -3759,6 +3762,33 @@ function openAdminConsole() {
     return true;
   }
 
+  // Check active customer sessions periodically. Supabase Auth bans prevent new
+  // sign-ins, while this check signs out already-open customer sessions promptly.
+  let banEnforcementInProgress = false;
+  async function enforceBanOnActiveSession() {
+    if (!supabase || banEnforcementInProgress) return;
+    const signedIn = getCurrentUser();
+    if (!signedIn?.email || signedIn.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
+    banEnforcementInProgress = true;
+    try {
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData?.user?.id || !authData.user.email) return;
+      const status = await checkUserBanStatus(authData.user.email, authData.user.id);
+      if (status.isBanned) {
+        const bannedEmail = authData.user.email.toLowerCase();
+        try { await supabase.auth.signOut(); } catch (e) {}
+        setCurrentUser(null);
+        if (dashboardModal) dashboardModal.hidden = true;
+        if (authModal) authModal.hidden = true;
+        showCustomerBannedNotice(bannedEmail, status.reason);
+      }
+    } catch (e) {
+      console.warn('VKEHI active-session ban check failed:', e.message || e);
+    } finally {
+      banEnforcementInProgress = false;
+    }
+  }
+
   async function executeAdminBan(targetEmail, reason) {
     const cleanEmail = (targetEmail || '').trim().toLowerCase();
     if (!cleanEmail) return false;
@@ -3818,6 +3848,13 @@ function openAdminConsole() {
       created_at: new Date().toISOString()
     });
     saveStoredBanHistory(hist);
+
+    // Send an English suspension notice to the customer's in-app message centre.
+    await sendCustomerMessage(
+      cleanEmail,
+      'VKEHI Account Suspended',
+      'Your account has been suspended by the VKEHI administrator. Please contact the VKEHI Admin through the official support channels on our website for assistance. You will be able to sign in again after the restriction is removed.'
+    );
 
     // 3. Invalidate active session if currently signed in user matches
     if (currentVerifiedUser && currentVerifiedUser.email && currentVerifiedUser.email.toLowerCase() === cleanEmail) {
@@ -4920,9 +4957,9 @@ window.handleSendAdminDirectMessage = async function() {
     const elEmail = document.getElementById('accountBannedModalEmail');
     const elReason = document.getElementById('accountBannedModalReason');
     if (elEmail) elEmail.textContent = email;
-    if (elReason) elReason.textContent = reason || 'Violation of Terms of Service';
+    if (elReason) elReason.textContent = 'Your account has been suspended by the administrator. Please contact the VKEHI Admin through the official support channels on our website for assistance.';
     if (modal) modal.hidden = false;
-    showToast('Your VKEHI account has been temporarily restricted. Please contact VKEHI Support.', 'error');
+    showToast('Account suspended. Please contact the VKEHI Admin.', 'error');
   }
 
   async function finishGoogleSignIn(authUser, isSilentRestore = false) {
