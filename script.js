@@ -3789,6 +3789,34 @@ function openAdminConsole() {
     }
   }
 
+  // Always resolve the real Supabase Auth UUID by email.
+  // Local customer IDs may be display IDs and must not be sent to Auth Admin APIs.
+  async function getAuthUserIdByEmail(email) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!supabase || !cleanEmail) return null;
+
+    const { data, error } = await supabase.functions.invoke('admin-ban-user', {
+      body: { action: 'list' }
+    });
+
+    if (error || !data?.success || !Array.isArray(data.users)) {
+      console.error('Supabase Auth user list failed:', error || data?.error);
+      showToast(data?.error || error?.message || 'Could not load Supabase Auth users.', 'error');
+      return null;
+    }
+
+    const authUser = data.users.find(
+      u => String(u.email || '').trim().toLowerCase() === cleanEmail
+    );
+
+    if (!authUser?.id) {
+      showToast('Customer was not found in Supabase Auth for: ' + cleanEmail, 'error');
+      return null;
+    }
+
+    return authUser.id;
+  }
+
   async function executeAdminBan(targetEmail, reason) {
     const cleanEmail = (targetEmail || '').trim().toLowerCase();
     if (!cleanEmail) return false;
@@ -3812,21 +3840,11 @@ function openAdminConsole() {
       showToast('Supabase connection is unavailable. Account was not banned.', 'error');
       return false;
     }
-    const targetUser = getStoredUsers().find(
-      u => String(u.email || '').toLowerCase() === cleanEmail
-    );
-    if (!targetUser?.id) {
-      await syncUsersFromCloud();
-    }
-    const userWithId = getStoredUsers().find(
-      u => String(u.email || '').toLowerCase() === cleanEmail
-    );
-    if (!userWithId?.id) {
-      showToast('Customer Supabase ID not found. Refresh the customer list and try again.', 'error');
-      return false;
-    }
+    const authUserId = await getAuthUserIdByEmail(cleanEmail);
+    if (!authUserId) return false;
+
     const { data: banResult, error: banError } = await supabase.functions.invoke('admin-ban-user', {
-      body: { user_id: userWithId.id, action: 'ban' }
+      body: { user_id: authUserId, action: 'ban' }
     });
     if (banError || !banResult?.success) {
       console.error('Supabase Auth ban failed:', banError || banResult?.error);
@@ -3884,21 +3902,11 @@ function openAdminConsole() {
       showToast('Supabase connection is unavailable. Account was not unbanned.', 'error');
       return false;
     }
-    const targetUser = getStoredUsers().find(
-      u => String(u.email || '').toLowerCase() === cleanEmail
-    );
-    if (!targetUser?.id) {
-      await syncUsersFromCloud();
-    }
-    const userWithId = getStoredUsers().find(
-      u => String(u.email || '').toLowerCase() === cleanEmail
-    );
-    if (!userWithId?.id) {
-      showToast('Customer Supabase ID not found. Refresh the customer list and try again.', 'error');
-      return false;
-    }
+    const authUserId = await getAuthUserIdByEmail(cleanEmail);
+    if (!authUserId) return false;
+
     const { data: unbanResult, error: unbanError } = await supabase.functions.invoke('admin-ban-user', {
-      body: { user_id: userWithId.id, action: 'unban' }
+      body: { user_id: authUserId, action: 'unban' }
     });
     if (unbanError || !unbanResult?.success) {
       console.error('Supabase Auth unban failed:', unbanError || unbanResult?.error);
