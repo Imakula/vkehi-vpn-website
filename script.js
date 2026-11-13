@@ -3771,12 +3771,20 @@ function openAdminConsole() {
     if (!signedIn?.email || signedIn.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
     banEnforcementInProgress = true;
     try {
-      const { data: authData, error: authError } = await supabase.auth.getUser();
-      if (authError || !authData?.user?.id || !authData.user.email) return;
-      const status = await checkUserBanStatus(authData.user.email, authData.user.id);
+      // Use the locally stored session as an identity hint. getUser() can reject
+      // an already-banned user before the ban-status endpoint gets a chance to run.
+      // The Edge Function verifies this access token cryptographically with getClaims().
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const session = sessionData?.session;
+      const sessionUser = session?.user;
+      if (sessionError || !session?.access_token || !sessionUser?.id || !sessionUser.email) return;
+
+      const status = await checkUserBanStatus(sessionUser.email, sessionUser.id);
       if (status.isBanned) {
-        const bannedEmail = authData.user.email.toLowerCase();
-        try { await supabase.auth.signOut(); } catch (e) {}
+        const bannedEmail = sessionUser.email.toLowerCase();
+        // Clear this browser's local session immediately, even if the server
+        // has already rejected the banned user's refresh token.
+        try { await supabase.auth.signOut({ scope: 'local' }); } catch (e) {}
         setCurrentUser(null);
         if (dashboardModal) dashboardModal.hidden = true;
         if (authModal) authModal.hidden = true;
