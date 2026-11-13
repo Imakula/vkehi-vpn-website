@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data.forEach(r => {
           if (!r.email) return;
           const old = map.get(r.email.toLowerCase()) || {};
-          map.set(r.email.toLowerCase(), { ...old, email: r.email, name: r.full_name || r.email.split('@')[0], joinDate: (r.created_at || '').slice(0,10), totalOrders: old.totalOrders || 0, status: old.status || 'Registered Customer' });
+          map.set(r.email.toLowerCase(), { ...old, id: r.id, email: r.email, name: r.full_name || r.email.split('@')[0], joinDate: (r.created_at || '').slice(0,10), totalOrders: old.totalOrders || 0, status: old.status || 'Registered Customer' });
         });
         saveStoredUsers(Array.from(map.values()));
         renderAdminUsers();
@@ -3713,61 +3713,50 @@ function openAdminConsole() {
     return list.some(r => r.email && r.email.toLowerCase() === clean && r.status === 'banned');
   }
 
-  async function checkUserBanStatus(email) {
+  async function checkUserBanStatus(email, userId) {
     if (!email) return { isBanned: false };
     const clean = email.trim().toLowerCase();
 
-    // 1. Direct Supabase Query
-    if (supabase) {
+    // Authoritative check against Supabase Auth via the protected Edge Function.
+    if (supabase && userId) {
       try {
-        const { data, error } = await supabase
-          .from('account_restrictions')
-          .select('status, reason, banned_at')
-          .ilike('email', clean)
-          .eq('status', 'banned')
-          .maybeSingle();
-
-        if (!error && data && data.status === 'banned') {
-          // Sync with local cache
-          const list = getStoredRestrictions().filter(r => r.email.toLowerCase() !== clean);
-          list.push({ email: clean, status: 'banned', reason: data.reason, banned_at: data.banned_at });
-          saveStoredRestrictions(list);
-          return { isBanned: true, reason: data.reason || 'Restricted by administrator', bannedAt: data.banned_at };
+        const { data, error } = await supabase.functions.invoke('admin-ban-user', {
+          body: { action: 'check', user_id: userId }
+        });
+        if (!error && data?.success) {
+          if (data.isBanned) {
+            return {
+              isBanned: true,
+              reason: 'Restricted by VKEHI administrator',
+              bannedAt: data.bannedUntil || null
+            };
+          }
+          return { isBanned: false };
         }
-      } catch(e) {}
+        if (error) console.warn('VKEHI Auth ban check failed:', error.message || error);
+      } catch (e) {
+        console.warn('VKEHI Auth ban check failed:', e);
+      }
     }
 
-    // 2. Local Fallback Cache
-    const local = getStoredRestrictions();
-    const found = local.find(r => r.email && r.email.toLowerCase() === clean && r.status === 'banned');
+    // Local fallback is only a convenience cache; Supabase Auth is authoritative.
+    const found = getStoredRestrictions().find(
+      r => r.email && r.email.toLowerCase() === clean && r.status === 'banned'
+    );
     if (found) {
-      return { isBanned: true, reason: found.reason || 'Violation of Terms of Service', bannedAt: found.banned_at };
+      return {
+        isBanned: true,
+        reason: found.reason || 'Violation of Terms of Service',
+        bannedAt: found.banned_at
+      };
     }
-
     return { isBanned: false };
   }
 
   async function syncRestrictionsFromCloud() {
-    if (!supabase) return;
-    try {
-      const { data: restrictions, error: err1 } = await supabase
-        .from('account_restrictions')
-        .select('*');
-      if (!err1 && Array.isArray(restrictions)) {
-        saveStoredRestrictions(restrictions);
-      }
-
-      const { data: history, error: err2 } = await supabase
-        .from('account_restrictions_history')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
-      if (!err2 && Array.isArray(history)) {
-        saveStoredBanHistory(history);
-      }
-    } catch(e) {
-      console.warn('Restrictions cloud sync notice:', e);
-    }
+    // Ban state is enforced by Supabase Auth. The admin browser keeps a local
+    // display cache; no account_restrictions tables are required.
+    return true;
   }
 
   async function executeAdminBan(targetEmail, reason) {
@@ -3788,23 +3777,34 @@ function openAdminConsole() {
       updated_at: new Date().toISOString()
     };
 
-    // 1. Update Supabase
-    if (supabase) {
-      try {
-        await supabase.from('account_restrictions').upsert(banRecord, { onConflict: 'email' });
-        await supabase.from('account_restrictions_history').insert({
-          email: cleanEmail,
-          action: 'BAN',
-          reason: reason || 'Violation of Terms of Service',
-          admin_email: ADMIN_EMAIL,
-          created_at: new Date().toISOString()
-        });
-      } catch(e) {
-        console.warn('Supabase ban record notice:', e);
-      }
+    // Perform the real Supabase Auth ban first. Never show success on a failed request.
+    if (!supabase) {
+      showToast('Supabase connection is unavailable. Account was not banned.', 'error');
+      return false;
+    }
+    const targetUser = getStoredUsers().find(
+      u => String(u.email || '').toLowerCase() === cleanEmail
+    );
+    if (!targetUser?.id) {
+      await syncUsersFromCloud();
+    }
+    const userWithId = getStoredUsers().find(
+      u => String(u.email || '').toLowerCase() === cleanEmail
+    );
+    if (!userWithId?.id) {
+      showToast('Customer Supabase ID not found. Refresh the customer list and try again.', 'error');
+      return false;
+    }
+    const { data: banResult, error: banError } = await supabase.functions.invoke('admin-ban-user', {
+      body: { user_id: userWithId.id, action: 'ban' }
+    });
+    if (banError || !banResult?.success) {
+      console.error('Supabase Auth ban failed:', banError || banResult?.error);
+      showToast(banResult?.error || banError?.message || 'Supabase could not ban this customer.', 'error');
+      return false;
     }
 
-    // 2. Update Local Stores
+    // 2. Update Local Stores only after Supabase confirms the ban.
     const list = getStoredRestrictions().filter(r => r.email.toLowerCase() !== cleanEmail);
     list.push(banRecord);
     saveStoredRestrictions(list);
@@ -3842,23 +3842,34 @@ function openAdminConsole() {
       updated_at: new Date().toISOString()
     };
 
-    // 1. Update Supabase
-    if (supabase) {
-      try {
-        await supabase.from('account_restrictions').update(unbanRecord).ilike('email', cleanEmail);
-        await supabase.from('account_restrictions_history').insert({
-          email: cleanEmail,
-          action: 'UNBAN',
-          reason: 'Account reinstated by administrator',
-          admin_email: ADMIN_EMAIL,
-          created_at: new Date().toISOString()
-        });
-      } catch(e) {
-        console.warn('Supabase unban notice:', e);
-      }
+    // Lift the real Supabase Auth ban first. Never show success on a failed request.
+    if (!supabase) {
+      showToast('Supabase connection is unavailable. Account was not unbanned.', 'error');
+      return false;
+    }
+    const targetUser = getStoredUsers().find(
+      u => String(u.email || '').toLowerCase() === cleanEmail
+    );
+    if (!targetUser?.id) {
+      await syncUsersFromCloud();
+    }
+    const userWithId = getStoredUsers().find(
+      u => String(u.email || '').toLowerCase() === cleanEmail
+    );
+    if (!userWithId?.id) {
+      showToast('Customer Supabase ID not found. Refresh the customer list and try again.', 'error');
+      return false;
+    }
+    const { data: unbanResult, error: unbanError } = await supabase.functions.invoke('admin-ban-user', {
+      body: { user_id: userWithId.id, action: 'unban' }
+    });
+    if (unbanError || !unbanResult?.success) {
+      console.error('Supabase Auth unban failed:', unbanError || unbanResult?.error);
+      showToast(unbanResult?.error || unbanError?.message || 'Supabase could not unban this customer.', 'error');
+      return false;
     }
 
-    // 2. Update Local Stores
+    // 2. Update Local Stores only after Supabase confirms the unban.
     const list = getStoredRestrictions().filter(r => r.email.toLowerCase() !== cleanEmail);
     list.push(unbanRecord);
     saveStoredRestrictions(list);
@@ -4922,7 +4933,7 @@ window.handleSendAdminDirectMessage = async function() {
     const avatar = meta.avatar_url || meta.picture || null;
 
     // 1. Account Restriction Enforcement Check!
-    const banStatus = await checkUserBanStatus(email);
+    const banStatus = await checkUserBanStatus(email, authUser.id);
     if (banStatus.isBanned) {
       if (supabase) {
         try { await supabase.auth.signOut(); } catch(e) {}
