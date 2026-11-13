@@ -1,0 +1,27 @@
+VKEHI VPN - SECURE SUPABASE PROJECT SETUP & RLS GUIDE
+
+Project reference: mlloszlbbtudmdtzblsu
+Project URL: https://mlloszlbbtudmdtzblsu.supabase.co
+Authorized Admin: vihangaimakula167@gmail.com
+
+UPDATES COMPLETED IN CODEBASE:
+1. Admin Login: Only Google OAuth is allowed for vihangaimakula167@gmail.com.
+2. Staff Password Login ('vk', 'admin', etc.): Completely removed.
+3. Customer Login: Only verified Google OAuth is allowed.
+4. Unverified / Passwordless Email Login: Completely removed.
+5. Session Authorization: Derived directly from active verified Supabase session (localStorage is no longer trusted for authorization).
+6. VPN Configuration Delivery: Only the verified owner of the order can view the config in their customer dashboard; fake dummy config fallback has been removed.
+7. Order Approval: Restricted to verified Admin session.
+8. Database Schema & RLS: Ready-to-run SQL script provided in 'supabase_schema_rls.sql'.
+
+REQUIRED MANUAL SETUP STEPS IN SUPABASE:
+1. Open Supabase Dashboard > Authentication > Providers > Google and enable Google.
+2. In Google Cloud Console, create a Web OAuth Client ID.
+   Authorized Redirect URI must be:
+   https://mlloszlbbtudmdtzblsu.supabase.co/auth/v1/callback
+3. Paste Google Client ID and Secret in Supabase Google Provider settings.
+4. Supabase > Authentication > URL Configuration:
+   Set Site URL to your domain (e.g., https://www.vpn.vkehi.store) and add redirect URLs.
+5. Supabase > SQL Editor:
+   Open the file 'supabase_schema_rls.sql' from this repository, paste into SQL Editor, and click RUN.
+   This creates orders, users, and messages tables with strict Row Level Security (RLS) policies.
