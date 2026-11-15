@@ -4364,7 +4364,13 @@ window.handleSendAdminDirectMessage = async function() {
     let orders = Array.from(mergedOrders.values()).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
     if (filter === 'pending') orders = orders.filter(o => o.status === 'pending' || o.status === 'pending_renewal');
     if (filter === 'approved') orders = orders.filter(o => o.status === 'approved');
-    if (filter === 'rejected') orders = orders.filter(o => o.status === 'rejected');
+    // Rejected orders belong only in the dedicated Rejected Orders section,
+    // not in the main Customer Orders & Slips list.
+    if (filter === 'rejected') {
+      orders = orders.filter(o => o.status === 'rejected');
+    } else {
+      orders = orders.filter(o => o.status !== 'rejected');
+    }
 
     if (orders.length === 0) {
       container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-dim);">No orders found in this category.</div>`;
