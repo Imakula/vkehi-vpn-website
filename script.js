@@ -3767,23 +3767,20 @@ function openAdminConsole() {
   let banEnforcementInProgress = false;
   async function enforceBanOnActiveSession() {
     if (!supabase || banEnforcementInProgress) return;
-    const signedIn = getCurrentUser();
-    if (!signedIn?.email || signedIn.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
     banEnforcementInProgress = true;
     try {
-      // Use the locally stored session as an identity hint. getUser() can reject
-      // an already-banned user before the ban-status endpoint gets a chance to run.
-      // The Edge Function verifies this access token cryptographically with getClaims().
+      // Always inspect the real Supabase session, not the app's display-user
+      // cache. The display user can be temporarily empty during page restores.
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       const session = sessionData?.session;
       const sessionUser = session?.user;
       if (sessionError || !session?.access_token || !sessionUser?.id || !sessionUser.email) return;
+      if (sessionUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
 
       const status = await checkUserBanStatus(sessionUser.email, sessionUser.id);
       if (status.isBanned) {
         const bannedEmail = sessionUser.email.toLowerCase();
-        // Clear this browser's local session immediately, even if the server
-        // has already rejected the banned user's refresh token.
+        // Immediately clear the local Supabase session and the website session.
         try { await supabase.auth.signOut({ scope: 'local' }); } catch (e) {}
         setCurrentUser(null);
         if (dashboardModal) dashboardModal.hidden = true;
@@ -3795,6 +3792,14 @@ function openAdminConsole() {
     } finally {
       banEnforcementInProgress = false;
     }
+  }
+
+  // Dedicated active-session enforcement: run independently of dashboard UI
+  // state, so a customer is logged out even while browsing another page/section.
+  if (supabase) {
+    setInterval(() => {
+      enforceBanOnActiveSession();
+    }, 5000);
   }
 
   // Always resolve the real Supabase Auth UUID by email.
