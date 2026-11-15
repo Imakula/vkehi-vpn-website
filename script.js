@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!currentUser || !currentUser.email) return true;
 
       const isAdmin = (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-      let query = supabase.from('orders').select('*');
+      let query = supabase.from('orders').select('id,order_ref,user_id,user_email,plan_id,plan_name,duration,location,isp,amount,whatsapp,telegram,payment_method,slip_url,status,config,sub_link,expiry_date,created_at,used_gb,total_gb');
       if (!isAdmin) {
         query = query.eq('user_email', currentUser.email.toLowerCase());
       }
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!currentUser || !currentUser.email) return;
 
       const isAdmin = (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-      let query = supabase.from('messages').select('*');
+      let query = supabase.from('messages').select('id,user_email,title,message,created_at');
       if (!isAdmin) {
         query = query.eq('user_email', currentUser.email.toLowerCase());
       }
@@ -386,9 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
       const currentUser = getCurrentUser();
       if (currentUser && currentUser.email) {
-        if (currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-          enforceBanOnActiveSession();
-        }
+        // Ban enforcement runs independently every 5 seconds below.
+        // Keep dashboard data synchronization lighter to reduce PostgREST egress.
         syncOrdersFromCloud();
         syncMessagesFromCloud();
         if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -400,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       }
-    }, 12000);
+    }, 60000);
   }
 
   // ==========================================================================
