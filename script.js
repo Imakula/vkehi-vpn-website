@@ -371,7 +371,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sessionError) throw sessionError;
       if (!session?.user || session.user.email?.toLowerCase() !== user.email.toLowerCase()) return false;
       const { error } = await supabase.from('profiles').upsert({
-        id: session.user.id, email: session.user.email, full_name: user.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+        id: session.user.id, email: session.user.email, full_name: user.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+        last_login_at: new Date().toISOString()
       }, { onConflict: 'id' });
       if (error) throw error;
       return true;
