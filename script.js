@@ -2116,14 +2116,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
       if (!session?.user || session.user.email?.toLowerCase() !== userEmail.toLowerCase()) return false;
-      const profile = {
-        id: session.user.id,
-        email: session.user.email,
-        full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email.split('@')[0],
-        [columnName]: new Date().toISOString()
-      };
-      const { error } = await supabase.from('profiles').upsert(profile, { onConflict: 'id' });
+      const timestamp = new Date().toISOString();
+      // Update the existing own profile row. This avoids requiring INSERT permission
+      // for every login/logout activity write under Supabase RLS.
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ [columnName]: timestamp })
+        .eq('id', session.user.id)
+        .select('id')
+        .maybeSingle();
       if (error) throw error;
+      if (!data) {
+        console.warn('VKEHI activity timestamp not saved: profile row not found for', session.user.email);
+        return false;
+      }
       return true;
     } catch (e) {
       console.error('VKEHI user activity save failed:', e.message || e);
