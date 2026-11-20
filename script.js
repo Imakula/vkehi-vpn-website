@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
       if (!session?.user) return false;
-      const { data, error } = await supabase.from('profiles').select('id,email,full_name,created_at');
+      const { data, error } = await supabase.from('profiles').select('id,email,full_name,created_at,last_login_at,last_logout_at');
       if (error) throw error;
       if (Array.isArray(data)) {
         const local = getStoredUsers();
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data.forEach(r => {
           if (!r.email) return;
           const old = map.get(r.email.toLowerCase()) || {};
-          map.set(r.email.toLowerCase(), { ...old, id: r.id, email: r.email, name: r.full_name || r.email.split('@')[0], joinDate: (r.created_at || '').slice(0,10), totalOrders: old.totalOrders || 0, status: old.status || 'Registered Customer' });
+          map.set(r.email.toLowerCase(), { ...old, id: r.id, email: r.email, name: r.full_name || r.email.split('@')[0], joinDate: (r.created_at || '').slice(0,10), lastLogin: r.last_login_at ? formatCloudDateTime(r.last_login_at) : (old.lastLogin || 'Not recorded'), lastLogout: r.last_logout_at ? formatCloudDateTime(r.last_logout_at) : (old.lastLogout || 'Never'), totalOrders: old.totalOrders || 0, status: old.status || 'Registered Customer' });
         });
         saveStoredUsers(Array.from(map.values()));
         renderAdminUsers();
@@ -2102,8 +2102,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function recordUserLoginTime(userEmail) {
-    if (!userEmail) return;
+  function formatCloudDateTime(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('en-LK', { timeZone: 'Asia/Colombo', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  async function saveUserActivityToCloud(userEmail, columnName) {
+    if (!supabase || !userEmail || !['last_login_at', 'last_logout_at'].includes(columnName)) return false;
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session?.user || session.user.email?.toLowerCase() !== userEmail.toLowerCase()) return false;
+      const profile = {
+        id: session.user.id,
+        email: session.user.email,
+        full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email.split('@')[0],
+        [columnName]: new Date().toISOString()
+      };
+      const { error } = await supabase.from('profiles').upsert(profile, { onConflict: 'id' });
+      if (error) throw error;
+      return true;
+    } catch (e) {
+      console.error('VKEHI user activity save failed:', e.message || e);
+      return false;
+    }
+  }
+
+  function recordUserLoginTime(userEmail, shouldRecord = true) {
+    if (!userEmail || !shouldRecord) return;
     const users = getStoredUsers();
     const nowStr = formatPrettyDateTime();
     const found = users.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
@@ -2111,9 +2139,10 @@ document.addEventListener('DOMContentLoaded', () => {
       found.lastLogin = nowStr;
       saveStoredUsers(users);
     }
+    saveUserActivityToCloud(userEmail, 'last_login_at');
   }
 
-  function recordUserLogoutTime(userEmail) {
+  async function recordUserLogoutTime(userEmail) {
     if (!userEmail) return;
     const users = getStoredUsers();
     const nowStr = formatPrettyDateTime();
@@ -2122,9 +2151,10 @@ document.addEventListener('DOMContentLoaded', () => {
       found.lastLogout = nowStr;
       saveStoredUsers(users);
     }
+    await saveUserActivityToCloud(userEmail, 'last_logout_at');
   }
 
-  function recordUserRegistration(user) {
+  function recordUserRegistration(user, shouldRecordLogin = true) {
     if (!user || !user.email) return;
     const users = getStoredUsers();
     const existing = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
@@ -2135,14 +2165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         email: user.email,
         name: user.name || user.email.split('@')[0],
         joinDate: today,
-        lastLogin: nowStr,
-        lastLogout: 'Active / Never',
+        lastLogin: shouldRecordLogin ? nowStr : 'Not recorded',
+        lastLogout: 'Never',
         totalOrders: 0,
         status: 'Registered Customer'
       });
       saveStoredUsers(users);
       pushUserToCloud({ email: user.email, name: user.name, joinDate: today, totalOrders: 0, status: 'Registered Customer' });
-    } else {
+    } else if (shouldRecordLogin) {
       existing.lastLogin = nowStr;
       saveStoredUsers(users);
     }
@@ -3396,7 +3426,7 @@ ${(ord.status === 'approved' || ord.status === 'pending_renewal') && (ord.config
         if (btnMobSignOut) {
           btnMobSignOut.onclick = async () => {
             const u = getCurrentUser();
-            if (u && u.email) recordUserLogoutTime(u.email);
+            if (u && u.email) await recordUserLogoutTime(u.email);
             if (supabase) {
               try { await supabase.auth.signOut(); } catch (e) {}
             }
@@ -3453,7 +3483,7 @@ ${(ord.status === 'approved' || ord.status === 'pending_renewal') && (ord.config
   if (btnSignOut) {
     btnSignOut.addEventListener('click', async () => {
       const u = getCurrentUser();
-      if (u && u.email) recordUserLogoutTime(u.email);
+      if (u && u.email) await recordUserLogoutTime(u.email);
       if (supabase) {
         try { await supabase.auth.signOut(); } catch (e) {}
       }
@@ -3467,7 +3497,7 @@ ${(ord.status === 'approved' || ord.status === 'pending_renewal') && (ord.config
   if (btnDashboardSignOut) {
     btnDashboardSignOut.addEventListener('click', async () => {
       const u = getCurrentUser();
-      if (u && u.email) recordUserLogoutTime(u.email);
+      if (u && u.email) await recordUserLogoutTime(u.email);
       if (supabase) {
         try { await supabase.auth.signOut(); } catch (e) {}
       }
@@ -3537,7 +3567,7 @@ function openAdminConsole() {
   const btnAdminLogout = document.getElementById('btnAdminLogout');
   if (btnAdminLogout) {
     btnAdminLogout.addEventListener('click', async () => {
-      recordUserLogoutTime(ADMIN_EMAIL);
+      await recordUserLogoutTime(ADMIN_EMAIL);
       if (supabase) {
         try { await supabase.auth.signOut(); } catch (e) {}
       }
@@ -4955,8 +4985,8 @@ window.handleSendAdminDirectMessage = async function() {
       method: authMethod || 'Google Account',
       id: customerId
     };
-    recordUserLoginTime(cleanEmail);
-    recordUserRegistration(userObj);
+    recordUserLoginTime(cleanEmail, !isSilentRestore);
+    recordUserRegistration(userObj, !isSilentRestore);
     setCurrentUser(userObj);
     updateNavAuthUI();
     if (authModal) authModal.hidden = true;
@@ -5079,9 +5109,6 @@ window.handleSendAdminDirectMessage = async function() {
         const isInitial = (event === 'INITIAL_SESSION');
         setTimeout(() => finishGoogleSignIn(session.user, isInitial), 0);
       } else if (event === 'SIGNED_OUT' || !session) {
-        if (currentVerifiedUser && currentVerifiedUser.email) {
-          recordUserLogoutTime(currentVerifiedUser.email);
-        }
         currentVerifiedUser = null;
         updateNavAuthUI();
         renderUserDashboard();
